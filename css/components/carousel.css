@@ -1,0 +1,120 @@
+/* =========================================================
+   VITALIS TECH — components/carousel.css
+   Carrusel de imágenes de fondo: slides, overlay, flechas y puntos.
+   Es un componente reutilizable — no incluye el contenido/texto
+   que va encima (eso vive en css/pages, porque cambia por página).
+   ========================================================= */
+
+.carousel {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.carousel__slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.carousel__slide.is-active {
+  opacity: 1;
+}
+
+.carousel__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(11, 31, 61, 0.92) 0%,
+    rgba(11, 31, 61, 0.78) 38%,
+    rgba(11, 31, 61, 0.45) 68%,
+    rgba(11, 31, 61, 0.25) 100%
+  );
+}
+
+/* ---------- Flechas ---------- */
+
+.carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.carousel__arrow:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.carousel__arrow--prev {
+  left: 20px;
+}
+
+.carousel__arrow--next {
+  right: 20px;
+}
+
+/* ---------- Indicadores (dots) ---------- */
+
+.carousel__dots {
+  position: absolute;
+  z-index: 3;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  gap: 8px;
+}
+
+.carousel__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.carousel__dot.is-active {
+  background: var(--white);
+  transform: scale(1.2);
+}
+
+.carousel__dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 900px) {
+  .carousel__arrow {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 520px) {
+  .carousel__arrow--prev {
+    left: 10px;
+  }
+
+  .carousel__arrow--next {
+    right: 10px;
+  }
+
+  .carousel__dots {
+    right: 50%;
+    transform: translateX(50%);
+  }
+}

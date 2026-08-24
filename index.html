@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vitalis Tech · Tu salud, siempre contigo</title>
+  <meta name="description" content="Vitalis Tech: plataforma que conecta a pacientes y centros de salud de Nicaragua." />
+
+  <link rel="icon" type="image/png" href="assets/logo/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Base: variables primero (todo lo demás depende de ellas), luego el reset -->
+  <link rel="stylesheet" href="css/base/variables.css" />
+  <link rel="stylesheet" href="css/base/reset.css" />
+
+  <!-- Componentes reutilizables en cualquier página -->
+  <link rel="stylesheet" href="css/components/loader.css" />
+  <link rel="stylesheet" href="css/components/navbar.css" />
+  <link rel="stylesheet" href="css/components/buttons.css" />
+  <link rel="stylesheet" href="css/components/carousel.css" />
+
+  <!-- Estilos propios de esta página -->
+  <link rel="stylesheet" href="css/pages/home.css" />
+</head>
+<body>
+
+  <!-- ==================== PANTALLA DE CARGA ==================== -->
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <div class="loader__inner">
+      <img class="loader__logo" src="assets/logo/logo.png" alt="" />
+      <svg class="loader__pulse" viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true">
+        <path class="loader__pulse-path" d="M0,30 L95,30 L110,8 L125,52 L140,18 L155,30 L300,30" />
+      </svg>
+      <p class="loader__text">Cargando Vitalis Tech<span class="loader__dots" aria-hidden="true"></span></p>
+    </div>
+  </div>
+
+  <!-- ==================== SITIO ==================== -->
+  <div class="site" id="site">
+
+    <!-- ---------- NAVBAR ---------- -->
+    <header class="navbar" id="navbar">
+      <div class="navbar__inner">
+        <a href="#inicio" class="navbar__brand">
+          <span class="navbar__logo-badge">
+            <img src="assets/logo/logo.png" alt="Vitalis Tech" class="navbar__logo" />
+          </span>
+          <span class="navbar__name">Vitalis<strong>Tech</strong></span>
+        </a>
+
+        <button class="navbar__login" id="btnLogin" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Iniciar sesión
+        </button>
+      </div>
+    </header>
+
+    <!-- ---------- HERO CON CARRUSEL DE FONDO ---------- -->
+    <main>
+      <section class="hero" id="inicio">
+
+        <!-- Carrusel de imágenes de fondo (componente reutilizable) -->
+        <div class="carousel" id="carousel">
+          <img src="assets/images/carousel/slide-1.jpg" alt="" class="carousel__slide is-active" data-slide="0" />
+          <img src="assets/images/carousel/slide-2.jpg" alt="" class="carousel__slide" data-slide="1" />
+          <img src="assets/images/carousel/slide-3.jpg" alt="" class="carousel__slide" data-slide="2" />
+          <div class="carousel__overlay"></div>
+        </div>
+
+        <!-- Flechas de navegación manual -->
+        <button class="carousel__arrow carousel__arrow--prev" id="prevSlide" type="button" aria-label="Imagen anterior">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="carousel__arrow carousel__arrow--next" id="nextSlide" type="button" aria-label="Siguiente imagen">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <!-- Contenido sobre el carrusel (propio de esta página) -->
+        <div class="hero__content">
+          <span class="hero__badge">Bienvenido a Vitalis Tech</span>
+
+          <h1 class="hero__title">
+            Tu salud es nuestra<br />
+            <span class="hero__title-accent">Prioridad</span>
+          </h1>
+
+          <p class="hero__subtext">
+            Agenda tus citas, consulta resultados y da seguimiento a tu tratamiento
+            desde tu celular. Conectamos a pacientes y centros de salud de Nicaragua
+            en un solo lugar, sin filas ni papeleo.
+          </p>
+
+          <div class="hero__stats">
+            <div class="hero__stat">
+              <span class="hero__stat-icon" aria-hidden="true">📅</span>
+              <span>Citas según disponibilidad real</span>
+            </div>
+            <div class="hero__stat">
+              <span class="hero__stat-icon" aria-hidden="true">🩺</span>
+              <span>Expediente clínico digital</span>
+            </div>
+            <div class="hero__stat">
+              <span class="hero__stat-icon" aria-hidden="true">🔔</span>
+              <span>Recordatorios automáticos</span>
+            </div>
+          </div>
+
+          <div class="hero__bottom-row">
+            <p class="hero__cta-text">Regístrate para agendar tu primera cita.</p>
+            <button class="btn btn--primary" id="btnRegister" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                <path d="M19 8v6M22 11h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Registrarse
+            </button>
+          </div>
+        </div>
+
+        <!-- Indicadores (puntos) del carrusel -->
+        <div class="carousel__dots" id="carouselDots">
+          <button class="carousel__dot is-active" data-dot="0" aria-label="Ir a la imagen 1"></button>
+          <button class="carousel__dot" data-dot="1" aria-label="Ir a la imagen 2"></button>
+          <button class="carousel__dot" data-dot="2" aria-label="Ir a la imagen 3"></button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2026 Vitalis Tech · Nicaragua</p>
+    </footer>
+  </div>
+
+  <!-- Componentes reutilizables -->
+  <script src="js/components/loading.js"></script>
+  <script src="js/components/navbar.js"></script>
+  <script src="js/components/carousel.js"></script>
+
+  <!-- Lógica propia de esta página -->
+  <script src="js/pages/home.js"></script>
+</body>
+</html>

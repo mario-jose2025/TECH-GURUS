@@ -1,0 +1,163 @@
+/* =========================================================
+   VITALIS TECH — pages/home.css
+   Estilos específicos de la pantalla de inicio (index.html).
+   El carrusel de fondo en sí vive en components/carousel.css;
+   aquí solo va el layout del hero y el contenido que se dibuja
+   encima (texto, badge, tarjeta de features, CTA).
+   ========================================================= */
+
+.hero {
+  position: relative;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: var(--container);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hero__badge {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: var(--cyan-100);
+  color: var(--navy-900);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin-bottom: 22px;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 20px;
+  max-width: 16ch;
+}
+
+.hero__title-accent {
+  color: var(--blue-500);
+}
+
+.hero__subtext {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 46ch;
+  margin-bottom: 32px;
+}
+
+/* ---------- Tarjeta flotante de features ---------- */
+
+.hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  box-shadow: 0 20px 40px -16px rgba(11, 31, 61, 0.5);
+  margin-bottom: 24px;
+  max-width: fit-content;
+}
+
+.hero__stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 20px;
+  border-right: 1px solid #e6ecf5;
+}
+
+.hero__stat:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.hero__stat-icon {
+  font-size: 1.2rem;
+}
+
+.hero__stat span:last-child {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy-heading);
+  max-width: 14ch;
+  line-height: 1.25;
+}
+
+.hero__bottom-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.hero__cta-text {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer {
+  padding: 24px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--slate-light);
+  border-top: 1px solid var(--blue-100);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .hero {
+    min-height: 580px;
+    padding: 110px 0 70px;
+  }
+
+  .hero__stats {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .hero__stat {
+    border-right: none;
+    padding-right: 0;
+    border-bottom: 1px solid #e6ecf5;
+    padding-bottom: 12px;
+  }
+
+  .hero__stat:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero__title {
+    font-size: 2rem;
+    max-width: none;
+  }
+
+  .hero__bottom-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

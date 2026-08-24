@@ -1,0 +1,40 @@
+/* =========================================================
+   VITALIS TECH — base/variables.css
+   Design tokens: colores, tipografía, espaciados, sombras.
+   Se cargan primero porque el resto de archivos dependen de esto.
+   ========================================================= */
+
+:root {
+  /* Color — extraído del logo Vitalis Tech */
+  --blue-700: #2554c7;
+  --blue-600: #3c84fb; /* azul principal del logo */
+  --blue-500: #5b98fc;
+  --blue-100: #ebf2ff;
+  --blue-50: #f5f9ff;
+
+  /* Color — extraído de la referencia (navbar y textos oscuros) */
+  --navy-900: #0b2f61;
+  --navy-800: #123b76;
+  --navy-heading: #1a426a;
+  --cyan-100: #d7f3f6;
+
+  --ink: #101828;
+  --slate: #4b5872;
+  --slate-light: #7c8aa3;
+  --white: #ffffff;
+
+  --success: #16a34a;
+
+  /* Tipografía */
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* Layout */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --container: 1180px;
+
+  --shadow-card: 0 12px 30px -12px rgba(60, 132, 251, 0.35);
+  --shadow-soft: 0 4px 16px rgba(16, 24, 40, 0.06);
+}
