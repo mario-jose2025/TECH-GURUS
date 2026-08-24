@@ -20,12 +20,10 @@
   }
   window.addEventListener("scroll", handleScroll, { passive: true });
 
-  // Placeholder de navegación — se conecta a la pantalla real de login
-  // cuando exista.
+  // Navegación real a la pantalla de login.
   if (btnLogin) {
     btnLogin.addEventListener("click", function () {
-      console.log("[Vitalis Tech] Ir a: Iniciar sesión");
-      // window.location.href = "pages/login.html";
+      window.location.href = "pages/login.html";
     });
   }
 })();

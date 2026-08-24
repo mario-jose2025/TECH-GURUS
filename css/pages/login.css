@@ -1,0 +1,350 @@
+/* =========================================================
+   VITALIS TECH — pages/login.css
+   Layout de dos paneles compartido por login y registro:
+   izquierda = panel de marca, derecha = formulario.
+   ========================================================= */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  background: var(--white);
+}
+
+/* =========================================================
+   PANEL DE MARCA (izquierda)
+   ========================================================= */
+
+.auth-brand {
+  width: 420px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px 40px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(165deg, var(--navy-800) 0%, var(--navy-900) 65%);
+}
+
+/* Resplandores decorativos — eco de la marca de agua del login */
+.auth-brand::before,
+.auth-brand::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.auth-brand::before {
+  width: 340px;
+  height: 340px;
+  top: -120px;
+  right: -140px;
+  background: radial-gradient(circle, rgba(60, 132, 251, 0.25) 0%, transparent 70%);
+}
+
+.auth-brand::after {
+  width: 260px;
+  height: 260px;
+  bottom: -100px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(60, 132, 251, 0.16) 0%, transparent 70%);
+}
+
+.auth-brand__content {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-brand__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 56px;
+}
+
+.auth-brand__logo-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--white);
+  flex-shrink: 0;
+}
+
+.auth-brand__logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.auth-brand__name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.auth-brand__name strong {
+  color: var(--blue-500);
+  font-weight: 800;
+}
+
+.auth-brand__headline {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+  max-width: 15ch;
+}
+
+.auth-brand__headline span {
+  color: var(--blue-500);
+}
+
+.auth-brand__text {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 36px;
+  max-width: 32ch;
+}
+
+.auth-brand__features {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-brand__feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.auth-brand__feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+/* Línea de pulso decorativa al pie del panel */
+.auth-brand__pulse {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 40px;
+  margin-top: 40px;
+}
+
+.auth-brand__pulse-path {
+  fill: none;
+  stroke: var(--blue-500);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: auth-pulse-draw 3.2s ease-in-out infinite;
+}
+
+@keyframes auth-pulse-draw {
+  0% { stroke-dashoffset: 420; }
+  60% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -420; }
+}
+
+.auth-brand__footer {
+  position: relative;
+  z-index: 1;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 12px;
+}
+
+/* =========================================================
+   PANEL DE FORMULARIO (derecha)
+   ========================================================= */
+
+.auth-form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.auth-form-panel__top {
+  display: flex;
+  justify-content: flex-end;
+  padding: 24px 40px 0;
+}
+
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--slate);
+  transition: color 0.2s ease;
+}
+
+.auth-back-link:hover {
+  color: var(--navy-900);
+}
+
+.auth-form-panel__body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 40px 48px;
+}
+
+/* Header simplificado que solo se ve en móvil (reemplaza al panel de marca) */
+.auth-mobile-header {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px 0;
+}
+
+.auth-mobile-header__logo-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--navy-900);
+  flex-shrink: 0;
+}
+
+.auth-mobile-header__logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.auth-mobile-header__name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.auth-mobile-header__name strong {
+  color: var(--blue-600);
+  font-weight: 800;
+}
+
+/* =========================================================
+   TARJETA / CONTENIDO DEL FORMULARIO
+   ========================================================= */
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ---------- Pestañas de rol ---------- */
+
+.auth-tabs {
+  display: flex;
+  background: var(--blue-50);
+  border-radius: 999px;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--slate);
+  text-align: center;
+  transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.auth-tab.is-active {
+  background: var(--white);
+  color: var(--navy-900);
+  box-shadow: 0 4px 12px -4px rgba(11, 31, 61, 0.25);
+}
+
+/* ---------- Encabezado ---------- */
+
+.auth-card__title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.auth-card__subtitle {
+  font-size: 0.92rem;
+  color: var(--slate);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* ---------- Pie de la tarjeta ---------- */
+
+.auth-card__footer {
+  text-align: center;
+  font-size: 0.87rem;
+  color: var(--slate);
+  margin-top: 20px;
+}
+
+/* Se oculta cuando el rol activo es "admin": el personal de salud
+   no se autorregistra, sus cuentas las crea el centro. */
+.auth-card__footer.is-hidden {
+  display: none;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 980px) {
+  .auth-brand {
+    display: none;
+  }
+
+  .auth-mobile-header {
+    display: flex;
+  }
+
+  .auth-form-panel__top {
+    padding: 20px 24px 0;
+  }
+
+  .auth-form-panel__body {
+    padding: 24px 24px 48px;
+  }
+}
+
+@media (max-width: 520px) {
+  .auth-card__title {
+    font-size: 1.4rem;
+  }
+}

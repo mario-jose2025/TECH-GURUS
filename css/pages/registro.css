@@ -1,0 +1,56 @@
+/* =========================================================
+   VITALIS TECH — pages/registro.css
+   Estilos específicos de la pantalla de registro de paciente.
+   Reutiliza .auth, .auth-card, etc. de login.css porque el
+   layout general (fondo, header, tarjeta) es el mismo; aquí solo
+   van los ajustes propios de un formulario más largo.
+   ========================================================= */
+
+.auth-card--wide {
+  max-width: 560px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 14px;
+}
+
+.form-grid .form-group {
+  grid-column: span 1;
+}
+
+.form-group--full {
+  grid-column: 1 / -1;
+}
+
+.form-hint {
+  font-size: 0.78rem;
+  color: var(--slate-light);
+  margin-top: 6px;
+}
+
+.form-terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 24px;
+  font-size: 0.85rem;
+  color: var(--slate);
+  line-height: 1.5;
+}
+
+.form-terms input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--blue-600);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

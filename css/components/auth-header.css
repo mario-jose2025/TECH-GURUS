@@ -1,0 +1,68 @@
+/* =========================================================
+   VITALIS TECH — components/auth-header.css
+   Header minimalista para pantallas de autenticación
+   (login, registro). Distinto del navbar del sitio público:
+   aquí solo hay logo + un link de regreso.
+   ========================================================= */
+
+.auth-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.auth-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.auth-header__logo-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--white);
+  flex-shrink: 0;
+}
+
+.auth-header__logo {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.auth-header__name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.auth-header__name strong {
+  color: var(--blue-500);
+  font-weight: 800;
+}
+
+.auth-header__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.2s ease;
+}
+
+.auth-header__back:hover {
+  color: var(--white);
+}
+
+@media (max-width: 520px) {
+  .auth-header__name {
+    display: none;
+  }
+}

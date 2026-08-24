@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crear cuenta · Vitalis Tech</title>
+  <meta name="description" content="Crea tu cuenta de paciente en Vitalis Tech y agenda tu primera cita." />
+
+  <link rel="icon" type="image/png" href="../assets/logo/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Base -->
+  <link rel="stylesheet" href="../css/base/variables.css" />
+  <link rel="stylesheet" href="../css/base/reset.css" />
+
+  <!-- Componentes reutilizables -->
+  <link rel="stylesheet" href="../css/components/buttons.css" />
+  <link rel="stylesheet" href="../css/components/form.css" />
+
+  <!-- Estilos propios de esta página (reutiliza el layout de login.css) -->
+  <link rel="stylesheet" href="../css/pages/login.css" />
+  <link rel="stylesheet" href="../css/pages/registro.css" />
+</head>
+<body>
+
+  <div class="auth-page">
+
+    <!-- ---------- PANEL DE MARCA (oculto en móvil) ---------- -->
+    <aside class="auth-brand">
+      <div class="auth-brand__content">
+        <a href="../index.html" class="auth-brand__top">
+          <span class="auth-brand__logo-badge">
+            <img src="../assets/logo/logo.png" alt="" class="auth-brand__logo" />
+          </span>
+          <span class="auth-brand__name">Vitalis<strong>Tech</strong></span>
+        </a>
+
+        <h2 class="auth-brand__headline">
+          Únete a <span>Vitalis Tech</span>
+        </h2>
+        <p class="auth-brand__text">
+          Crea tu cuenta y empieza a agendar citas, recibir recordatorios y
+          llevar tu historial médico siempre a la mano.
+        </p>
+
+        <div class="auth-brand__features">
+          <div class="auth-brand__feature">
+            <span class="auth-brand__feature-icon" aria-hidden="true">📅</span>
+            Citas según disponibilidad real
+          </div>
+          <div class="auth-brand__feature">
+            <span class="auth-brand__feature-icon" aria-hidden="true">🩺</span>
+            Expediente clínico digital
+          </div>
+          <div class="auth-brand__feature">
+            <span class="auth-brand__feature-icon" aria-hidden="true">🔔</span>
+            Recordatorios automáticos
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <svg class="auth-brand__pulse" viewBox="0 0 340 40" preserveAspectRatio="none" aria-hidden="true">
+          <path class="auth-brand__pulse-path" d="M0,20 L80,20 L95,4 L110,36 L125,12 L140,20 L340,20" />
+        </svg>
+        <p class="auth-brand__footer">&copy; 2026 Vitalis Tech · Nicaragua</p>
+      </div>
+    </aside>
+
+    <!-- ---------- PANEL DE FORMULARIO ---------- -->
+    <div class="auth-form-panel">
+
+      <!-- Header simplificado, solo visible en móvil -->
+      <div class="auth-mobile-header">
+        <span class="auth-mobile-header__logo-badge">
+          <img src="../assets/logo/logo.png" alt="Vitalis Tech" class="auth-mobile-header__logo" />
+        </span>
+        <span class="auth-mobile-header__name">Vitalis<strong>Tech</strong></span>
+      </div>
+
+      <div class="auth-form-panel__top">
+        <a href="../index.html" class="auth-back-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Volver al inicio
+        </a>
+      </div>
+
+      <div class="auth-form-panel__body">
+        <div class="auth-card auth-card--wide">
+
+          <h1 class="auth-card__title">Crea tu cuenta</h1>
+          <p class="auth-card__subtitle">
+            Regístrate como paciente para agendar citas y ver tu historial médico.
+            Esta cuenta es solo para pacientes — si eres personal de salud, tu centro te asigna el acceso.
+          </p>
+
+          <form id="registerForm" novalidate>
+            <div class="form-grid">
+
+              <div class="form-group" id="firstNameGroup">
+                <label class="form-label" for="firstName">Nombres</label>
+                <div class="form-input-wrapper">
+                  <span class="form-input-wrapper__icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.5-4 4.5-6 7.5-6s6 2 7.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  </span>
+                  <input class="form-input" type="text" id="firstName" name="firstName" placeholder="Ej. María" autocomplete="given-name" required />
+                </div>
+                <span class="form-error" id="firstNameError">Ingresa tus nombres.</span>
+              </div>
+
+              <div class="form-group" id="lastNameGroup">
+                <label class="form-label" for="lastName">Apellidos</label>
+                <div class="form-input-wrapper">
+                  <span class="form-input-wrapper__icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.5-4 4.5-6 7.5-6s6 2 7.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  </span>
+                  <input class="form-input" type="text" id="lastName" name="lastName" placeholder="Ej. Gómez" autocomplete="family-name" required />
+                </div>
+                <span class="form-error" id="lastNameError">Ingresa tus apellidos.</span>
+              </div>
+
+              <div class="form-group form-group--full" id="emailGroup">
+                <label class="form-label" for="email">Correo electrónico</label>
+                <div class="form-input-wrapper">
+                  <span class="form-input-wrapper__icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.8"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <input class="form-input" type="email" id="email" name="email" placeholder="tu@correo.com" autocomplete="email" required />
+                </div>
+                <span class="form-error" id="emailError">Ingresa un correo electrónico válido.</span>
+              </div>
+
+              <div class="form-group form-group--full" id="usernameGroup">
+                <label class="form-label" for="username">Usuario</label>
+                <div class="form-input-wrapper">
+                  <span class="form-input-wrapper__icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9 10h.01M15 10h.01M8.5 15c1 1 2.2 1.5 3.5 1.5s2.5-.5 3.5-1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  </span>
+                  <input class="form-input" type="text" id="username" name="username" placeholder="Ej. maria.gomez" autocomplete="username" required minlength="4" />
+                </div>
+                <span class="form-hint">Con este usuario vas a iniciar sesión (sin espacios).</span>
+                <span class="form-error" id="usernameError">El usuario debe tener al menos 4 caracteres, sin espacios.</span>
+              </div>
+
+              <div class="form-group form-group--full" id="phoneGroup">
+                <label class="form-label" for="phone">Número de teléfono</label>
+                <div class="form-input-wrapper">
+                  <span class="form-input-wrapper__icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2 2C10.5 19 5 13.5 5 6a2 2 0 0 1 1-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                  </span>
+                  <input class="form-input" type="tel" id="phone" name="phone" placeholder="8888 8888" autocomplete="tel" required />
+                </div>
+                <span class="form-error" id="phoneError">Ingresa un número de teléfono válido.</span>
+              </div>
+
+              <div class="form-group" id="passwordGroup">
+                <label class="form-label" for="password">Contraseña</label>
+                <div class="form-input-wrapper">
+                  <span class="form-input-wrapper__icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.8"/></svg>
+                  </span>
+                  <input class="form-input form-input--has-toggle" type="password" id="password" name="password" placeholder="••••••••" autocomplete="new-password" required minlength="6" />
+                  <button class="form-toggle-visibility" id="togglePassword" type="button" aria-label="Mostrar contraseña">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+                  </button>
+                </div>
+                <span class="form-error" id="passwordError">Debe tener al menos 6 caracteres.</span>
+              </div>
+
+              <div class="form-group" id="confirmPasswordGroup">
+                <label class="form-label" for="confirmPassword">Confirmar contraseña</label>
+                <div class="form-input-wrapper">
+                  <span class="form-input-wrapper__icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.8"/></svg>
+                  </span>
+                  <input class="form-input" type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" autocomplete="new-password" required />
+                </div>
+                <span class="form-error" id="confirmPasswordError">Las contraseñas no coinciden.</span>
+              </div>
+            </div>
+
+            <label class="form-terms">
+              <input type="checkbox" id="terms" name="terms" required />
+              Acepto los <a href="#" class="form-link">Términos y condiciones</a> y el tratamiento de mis datos de salud conforme a la política de privacidad.
+            </label>
+
+            <button class="btn btn--primary" id="btnSubmit" type="submit" style="width: 100%; justify-content: center;">
+              Crear mi cuenta
+            </button>
+          </form>
+
+          <p class="auth-card__footer">
+            ¿Ya tienes cuenta? <a href="login.html" class="form-link">Inicia sesión aquí</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lógica propia de esta página -->
+  <script src="../js/pages/registro.js"></script>
+</body>
+</html>
