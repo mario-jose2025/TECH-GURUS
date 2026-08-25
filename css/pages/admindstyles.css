@@ -1,0 +1,61 @@
+/* ========================================================
+   PERSONALIZACIÓN VITALIS TECH (SOBRE SB ADMIN 2)
+   ======================================================== */
+
+/* Sidebar Institucional (Fondo Azul Slate & Teal) */
+.bg-gradient-primary {
+  background-color: #0f172a !important; 
+  background-image: linear-gradient(180deg, #0284c7 0%, #0f172a 100%) !important;
+  background-size: cover;
+}
+
+.sidebar-brand-text {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.sidebar-brand-text span {
+  color: #38bdf8;
+}
+
+/* Selección activa en el menú */
+.sidebar-dark .nav-item.active .nav-link {
+  color: #38bdf8 !important;
+  font-weight: 700;
+}
+
+.sidebar-dark .nav-item .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+}
+
+/* Badges de Prioridad */
+.badge-alta {
+  background-color: #ef4444;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.badge-media {
+  background-color: #f59e0b;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.badge-normal {
+  background-color: #10b981;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+/* Ajuste de Topbar */
+.topbar {
+  border-bottom: 2px solid #e2e8f0;
+}

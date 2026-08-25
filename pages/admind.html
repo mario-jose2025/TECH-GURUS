@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitalis Tech - Panel de Administración</title>
+
+  <!-- Bootstrap 4.6 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- SB Admin 2 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css">
+
+  <!-- Tu CSS Personalizado -->
+  <link rel="stylesheet" href="../css/pages/admindstyles.css">
+</head>
+
+<body id="page-top">
+  <div id="wrapper">
+
+    <!-- ================= MENÚ LATERAL (SIDEBAR) ================= -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Logo personalizable con imagen o fallback -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
+        <div class="sidebar-brand-icon">
+          <img src="../assets/logo/logo.png" alt="Vitalis Tech Logo" style="max-height: 38px; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+          <i class="fas fa-heart-pulse text-info" style="display:none;"></i>
+        </div>
+        <div class="sidebar-brand-text mx-2">Vitalis <span>Tech</span></div>
+      </a>
+
+      <hr class="sidebar-divider my-0">
+
+      <!-- Vista Dashboard -->
+      <li class="nav-item active" id="nav-resumen">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('resumen', 'nav-resumen')">
+          <i class="fas fa-fw fa-chart-line"></i>
+          <span>Dashboard General</span>
+        </a>
+      </li>
+
+      <hr class="sidebar-divider">
+      <div class="sidebar-heading">Módulos de Salud</div>
+
+      <!-- 1. Registrar Pacientes -->
+      <li class="nav-item" id="nav-reg-pacientes">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('reg-pacientes', 'nav-reg-pacientes')">
+          <i class="fas fa-fw fa-user-plus"></i>
+          <span>Registrar Pacientes</span>
+        </a>
+      </li>
+
+      <!-- 2. Crear Expediente Clínico -->
+      <li class="nav-item" id="nav-expediente">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('expediente', 'nav-expediente')">
+          <i class="fas fa-fw fa-folder-plus"></i>
+          <span>Crear Expediente</span>
+        </a>
+      </li>
+
+      <!-- 3. Registrar Consultas Médicas -->
+      <li class="nav-item" id="nav-consultas">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('consultas', 'nav-consultas')">
+          <i class="fas fa-fw fa-notes-medical"></i>
+          <span>Consultas Médicas</span>
+        </a>
+      </li>
+
+      <!-- 4. Subir Resultados de Laboratorio -->
+      <li class="nav-item" id="nav-laboratorio">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('laboratorio', 'nav-laboratorio')">
+          <i class="fas fa-fw fa-file-waveform"></i>
+          <span>Subir Laboratorio</span>
+        </a>
+      </li>
+
+      <!-- 5. Gestionar Agenda de Médicos -->
+      <li class="nav-item" id="nav-agenda">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('agenda', 'nav-agenda')">
+          <i class="fas fa-fw fa-calendar-days"></i>
+          <span>Agenda Médica</span>
+        </a>
+      </li>
+
+      <!-- 6. Estadísticas de Enfermedades -->
+      <li class="nav-item" id="nav-estadisticas">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('estadisticas', 'nav-estadisticas')">
+          <i class="fas fa-fw fa-chart-pie"></i>
+          <span>Estadísticas de Salud</span>
+        </a>
+      </li>
+
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <li class="nav-item">
+        <a class="nav-link text-danger font-weight-bold" href="login.html">
+          <i class="fas fa-fw fa-right-from-bracket text-danger"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+
+        <!-- Topbar Superior -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow-sm justify-content-between">
+          <h1 class="h5 mb-0 text-gray-800 font-weight-bold">Vitalis Tech - Panel del Personal de Salud</h1>
+          <div class="user-info-top d-flex align-items-center">
+            <span class="mr-3 text-gray-600 small font-weight-bold">Dr. Personal de Salud</span>
+            <div class="img-profile rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:38px; height:38px;">
+              <i class="fas fa-user-doctor"></i>
+            </div>
+          </div>
+        </nav>
+
+        <div class="container-fluid">
+
+          <!-- VISTA 0: DASHBOARD GENERAL -->
+          <div id="sec-resumen" class="content-section">
+            <h1 class="h3 mb-4 text-gray-800 font-weight-bold">Vista General</h1>
+            <div class="row">
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Pacientes Atendidos Hoy</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">128</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Casos Prioritarios</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">14</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Citas Agendadas</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">42</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Laboratorios Subidos</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">89</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISTA 1: REGISTRAR PACIENTES -->
+          <div id="sec-reg-pacientes" class="content-section" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Registrar Nuevo Paciente</h1>
+              <span class="badge badge-primary p-2"><i class="fas fa-shield-halved mr-1"></i> Ficha Oficial de Registro</span>
+            </div>
+
+            <div class="card shadow mb-4 border-0">
+              <div class="card-header py-3 bg-primary text-white d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-user-plus mr-2"></i>Datos Demográficos y Clasificación Triage</h6>
+                <small class="text-white-50">* Campos obligatorios</small>
+              </div>
+              
+              <div class="card-body p-4">
+                <form id="form-registrar-paciente" novalidate>
+                  
+                  <!-- BLOQUE 1: DATOS PERSONALES -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-primary">
+                    <h6 class="font-weight-bold text-primary mb-3"><i class="fas fa-id-card mr-2"></i>1. Información Personal</h6>
+                    
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Nombres *</label>
+                        <input type="text" class="form-control" id="pac-nombres" placeholder="Ej. Ana María" required>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Apellidos *</label>
+                        <input type="text" class="form-control" id="pac-apellidos" placeholder="Ej. López Pérez" required>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Cédula de Identidad</label>
+                        <input type="text" class="form-control" id="pac-cedula" placeholder="001-000000-0000X">
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Fecha de Nacimiento *</label>
+                        <input type="date" class="form-control" id="pac-fnacimiento" required>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Sexo / Género *</label>
+                        <select class="form-control" id="pac-sexo" required>
+                          <option value="">Seleccionar...</option>
+                          <option value="Femenino">Femenino</option>
+                          <option value="Masculino">Masculino</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Teléfono de Contacto *</label>
+                        <input type="tel" class="form-control" id="pac-telefono" placeholder="8888-8888" required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BLOQUE 2: CLASIFICACIÓN SANITARIA Y FILA PRIORIZADA -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-danger">
+                    <h6 class="font-weight-bold text-danger mb-3"><i class="fas fa-heart-pulse mr-2"></i>2. Condición Vulnerable (Para Fila Priorizada)</h6>
+                    
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label class="font-weight-bold small text-gray-700">Categoría de Vulnerabilidad *</label>
+                        <select class="form-control font-weight-bold text-dark" id="pac-condicion">
+                          <option value="Ninguna">Ninguna / Consulta General (Prioridad Normal)</option>
+                          <option value="Embarazada">Embarazada (Prioridad Alta)</option>
+                          <option value="Adulto Mayor">Adulto Mayor 60+ años (Prioridad Alta)</option>
+                          <option value="Enfermedad Crónica">Enfermedad Crónica - Diabetes / Hipertensión (Prioridad Media)</option>
+                          <option value="Discapacidad">Persona con Discapacidad (Prioridad Alta)</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label class="font-weight-bold small text-gray-700">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="pac-correo" placeholder="paciente@ejemplo.com">
+                      </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                      <label class="font-weight-bold small text-gray-700">Dirección de Domicilio</label>
+                      <input type="text" class="form-control" id="pac-direccion" placeholder="Barrio, Comarca o Municipio">
+                    </div>
+                  </div>
+
+                  <!-- BOTONES DE ACCIÓN -->
+                  <div class="d-flex justify-content-end align-items-center pt-2">
+                    <button type="reset" class="btn btn-outline-secondary mr-3 px-4">
+                      <i class="fas fa-eraser mr-1"></i> Limpiar Campos
+                    </button>
+                    <button type="submit" class="btn btn-primary px-5 py-2 font-weight-bold shadow-sm">
+                      <i class="fas fa-save mr-2"></i> Guardar Paciente
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISTA 2: CREAR EXPEDIENTE CLÍNICO DIGITAL -->
+          <div id="sec-expediente" class="content-section" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Crear Expediente Clínico Digital</h1>
+              <span class="badge badge-success p-2"><i class="fas fa-folder-plus mr-1"></i> Historial Clínico Único</span>
+            </div>
+
+            <div class="card shadow mb-4 border-0">
+              <div class="card-header py-3 bg-success text-white d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-notes-medical mr-2"></i>Apertura de Expediente Integral</h6>
+                <small class="text-white-50">* Información confidencial del paciente</small>
+              </div>
+
+              <div class="card-body p-4">
+                <form id="form-crear-expediente" novalidate>
+
+                  <!-- BUSCADOR DE PACIENTE Y TIPO SANGUÍNEO -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-success">
+                    <h6 class="font-weight-bold text-success mb-3"><i class="fas fa-search mr-2"></i>1. Vincular Paciente</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-8">
+                        <label class="font-weight-bold small text-gray-700">Buscar Paciente Registrado *</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="exp-buscar-paciente" placeholder="Ingrese Cédula, Nombres o No. de Registro..." required>
+                          <div class="input-group-append">
+                            <button class="btn btn-success" type="button" onclick="alert('Modo Diseño: Búsqueda simulada')">
+                              <i class="fas fa-magnifying-glass"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Tipo de Sangre / RH *</label>
+                        <select class="form-control font-weight-bold text-dark" id="exp-tiposangre" required>
+                          <option value="">Seleccionar...</option>
+                          <option value="O+">O Positivo (O+)</option>
+                          <option value="O-">O Negativo (O-)</option>
+                          <option value="A+">A Positivo (A+)</option>
+                          <option value="A-">A Negativo (A-)</option>
+                          <option value="B+">B Positivo (B+)</option>
+                          <option value="B-">B Negativo (B-)</option>
+                          <option value="AB+">AB Positivo (AB+)</option>
+                          <option value="AB-">AB Negativo (AB-)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ANTECEDENTES Y ALERGIAS -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-primary">
+                    <h6 class="font-weight-bold text-primary mb-3"><i class="fas fa-file-medical-disease mr-2"></i>2. Antecedentes Patológicos y Alergias</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label class="font-weight-bold small text-gray-700">Alergias Conocidas (Medicamentos / Alimentos)</label>
+                        <textarea class="form-control border-left-danger" id="exp-alergias" rows="3" placeholder="Ej. Penicilina, Mariscos, AINEs... (Escriba 'Ninguna' si aplica)"></textarea>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label class="font-weight-bold small text-gray-700">Enfermedades Crónicas / Preexistentes</label>
+                        <textarea class="form-control" id="exp-enfermedades" rows="3" placeholder="Ej. Hipertensión Arterial, Diabetes Tipo II, Asma..."></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group mb-0">
+                      <label class="font-weight-bold small text-gray-700">Cirugías Previas o Traumatismos</label>
+                      <input type="text" class="form-control" id="exp-cirugias" placeholder="Detalle intervención y año aproximado (Ej. Apendectomía en 2018)">
+                    </div>
+                  </div>
+
+                  <!-- HÁBITOS Y ANTECEDENTES FAMILIARES -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-info">
+                    <h6 class="font-weight-bold text-info mb-3"><i class="fas fa-people-roof mr-2"></i>3. Antecedentes Heredofamiliares y Hábitos</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label class="font-weight-bold small text-gray-700">Antecedentes Familiares Importantes</label>
+                        <textarea class="form-control" id="exp-familiares" rows="2" placeholder="Padre/Madre con hipertensión, cardiopatías, cáncer, etc."></textarea>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label class="font-weight-bold small text-gray-700">Hábitos de Riesgo / Estilo de Vida</label>
+                        <div class="pt-2">
+                          <div class="form-check form-check-inline mr-4">
+                            <input class="form-check-input" type="checkbox" id="hab-fuma" value="Fuma">
+                            <label class="form-check-label font-weight-bold small" for="hab-fuma">Consumo de Tabaco</label>
+                          </div>
+                          <div class="form-check form-check-inline mr-4">
+                            <input class="form-check-input" type="checkbox" id="hab-alcohol" value="Alcohol">
+                            <label class="form-check-label font-weight-bold small" for="hab-alcohol">Consumo de Alcohol</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BOTONES DE ACCIÓN -->
+                  <div class="d-flex justify-content-end align-items-center pt-2">
+                    <button type="reset" class="btn btn-outline-secondary mr-3 px-4">
+                      <i class="fas fa-eraser mr-1"></i> Limpiar Campos
+                    </button>
+                    <button type="submit" class="btn btn-success px-5 py-2 font-weight-bold shadow-sm">
+                      <i class="fas fa-folder-plus mr-2"></i> Generar Expediente
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISTA 3: REGISTRAR CONSULTAS MÉDICAS -->
+          <div id="sec-consultas" class="content-section" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Registrar Consulta Médica</h1>
+              <span class="badge badge-info p-2"><i class="fas fa-stethoscope mr-1"></i> Atención Ambualtoria / Ficha Clínica</span>
+            </div>
+
+            <div class="card shadow mb-4 border-0">
+              <div class="card-header py-3 bg-info text-white d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-notes-medical mr-2"></i>Registro de Diagnóstico y Prescripción</h6>
+                <small class="text-white-50">* Formulario de Atención Médica</small>
+              </div>
+
+              <div class="card-body p-4">
+                <form id="form-registrar-consulta" novalidate>
+
+                  <!-- BLOQUE 1: BÚSQUEDA DE PACIENTE Y ESPECIALIDAD -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-info">
+                    <h6 class="font-weight-bold text-info mb-3"><i class="fas fa-user-check mr-2"></i>1. Paciente y Área de Atención</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label class="font-weight-bold small text-gray-700">Paciente Atendido *</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="con-paciente" placeholder="Buscar por Cédula o No. Expediente..." required>
+                          <div class="input-group-append">
+                            <button class="btn btn-info" type="button" onclick="alert('Modo Diseño: Paciente localizado')">
+                              <i class="fas fa-magnifying-glass"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label class="font-weight-bold small text-gray-700">Especialidad / Servicio *</label>
+                        <select class="form-control" id="con-especialidad" required>
+                          <option value="">Seleccionar...</option>
+                          <option value="Medicina General">Medicina General</option>
+                          <option value="Pediatría">Pediatría</option>
+                          <option value="Gineco-Obstetricia">Gineco-Obstetricia</option>
+                          <option value="Medicina Interna">Medicina Interna</option>
+                          <option value="Urgencias">Urgencias / Triage</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label class="font-weight-bold small text-gray-700">Fecha de Atención *</label>
+                        <input type="date" class="form-control" id="con-fecha" required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BLOQUE 2: SIGNOS VITALES -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-warning">
+                    <h6 class="font-weight-bold text-warning mb-3"><i class="fas fa-heartbeat mr-2"></i>2. Triaje y Signos Vitales</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-3">
+                        <label class="font-weight-bold small text-gray-700">Presión Arterial (mmHg)</label>
+                        <input type="text" class="form-control" id="con-pa" placeholder="120/80">
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label class="font-weight-bold small text-gray-700">Frecuencia Cardíaca (bpm)</label>
+                        <input type="number" class="form-control" id="con-fc" placeholder="75">
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label class="font-weight-bold small text-gray-700">Temperatura (°C)</label>
+                        <input type="number" step="0.1" class="form-control" id="con-temp" placeholder="36.5">
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label class="font-weight-bold small text-gray-700">Peso (kg)</label>
+                        <input type="number" step="0.1" class="form-control" id="con-peso" placeholder="70.0">
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label class="font-weight-bold small text-gray-700">Talla / Estatura (cm)</label>
+                        <input type="number" class="form-control" id="con-talla" placeholder="170">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BLOQUE 3: EVALUACIÓN CLÍNICA Y DIAGNÓSTICO -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-primary">
+                    <h6 class="font-weight-bold text-primary mb-3"><i class="fas fa-stethoscope mr-2"></i>3. Evaluación y Diagnóstico CIE-10</h6>
+                    <div class="form-group">
+                      <label class="font-weight-bold small text-gray-700">Motivo de Consulta y Sintomatología *</label>
+                      <textarea class="form-control" id="con-motivo" rows="2" placeholder="Describa el motivo de la visita y síntomas referidos..." required></textarea>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-8">
+                        <label class="font-weight-bold small text-gray-700">Diagnóstico Principal (CIE-10) *</label>
+                        <input type="text" class="form-control" id="con-diagnostico" placeholder="Ej. J00 Resfriado común / I10 Hipertensión primaria" required>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Tipo de Diagnóstico</label>
+                        <select class="form-control" id="con-tipodiag">
+                          <option value="Presuntivo">Presuntivo</option>
+                          <option value="Confirmado">Confirmado</option>
+                          <option value="Control de Rutina">Control de Rutina</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BLOQUE 4: RECETA MÉDICA Y RECOMENDACIONES -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-success">
+                    <h6 class="font-weight-bold text-success mb-3"><i class="fas fa-pills mr-2"></i>4. Prescripción y Tratamiento</h6>
+                    <div class="form-group">
+                      <label class="font-weight-bold small text-gray-700">Tratamiento Farmacológico (Receta Médica)</label>
+                      <textarea class="form-control" id="con-receta" rows="3" placeholder="Ej. Acetaminofén 500mg - 1 tableta cada 8 horas por 5 días."></textarea>
+                    </div>
+                    <div class="form-group mb-0">
+                      <label class="font-weight-bold small text-gray-700">Indicaciones y Recomendaciones Generales</label>
+                      <input type="text" class="form-control" id="con-indicaciones" placeholder="Reposo, consumo de abundantes líquidos, cita de seguimiento en 15 días, etc.">
+                    </div>
+                  </div>
+
+                  <!-- BOTONES DE ACCIÓN -->
+                  <div class="d-flex justify-content-end align-items-center pt-2">
+                    <button type="reset" class="btn btn-outline-secondary mr-3 px-4">
+                      <i class="fas fa-eraser mr-1"></i> Limpiar Campos
+                    </button>
+                    <button type="submit" class="btn btn-info px-5 py-2 font-weight-bold shadow-sm">
+                      <i class="fas fa-file-medical mr-2"></i> Guardar Consulta
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISTA 4: SUBIR RESULTADOS DE LABORATORIO -->
+          <div id="sec-laboratorio" class="content-section" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Subir Resultados de Laboratorio</h1>
+              <span class="badge badge-warning p-2 text-dark"><i class="fas fa-vial mr-1"></i> Gestión de Exámenes Clínicos</span>
+            </div>
+
+            <div class="card shadow mb-4 border-0">
+              <div class="card-header py-3 bg-warning text-dark d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-file-waveform mr-2"></i>Carga Digital de Exámenes e Informes</h6>
+                <small class="text-dark-50">* Formatos permitidos: PDF, JPG, PNG</small>
+              </div>
+
+              <div class="card-body p-4">
+                <form id="form-subir-laboratorio" novalidate>
+
+                  <!-- BLOQUE 1: PACIENTE Y TIPO DE EXAMEN -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-warning">
+                    <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-id-card-clip mr-2"></i>1. Datos del Examen y Paciente</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label class="font-weight-bold small text-gray-700">Paciente Asociado *</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="lab-paciente" placeholder="Buscar por Cédula o Nombre..." required>
+                          <div class="input-group-append">
+                            <button class="btn btn-warning text-dark" type="button" onclick="alert('Modo Diseño: Paciente enlazado')">
+                              <i class="fas fa-search"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label class="font-weight-bold small text-gray-700">Tipo de Examen *</label>
+                        <select class="form-control" id="lab-tipo" required>
+                          <option value="">Seleccionar...</option>
+                          <option value="Hemograma Completo">Hemograma Completo</option>
+                          <option value="Glucosa / Perfil Bioquímico">Glucosa / Perfil Bioquímico</option>
+                          <option value="Perfil Lipídico">Perfil Lipídico</option>
+                          <option value="Examen General de Orina (EGO)">Examen General de Orina (EGO)</option>
+                          <option value="Ultrasonido / Rayos X">Ultrasonido / Rayos X</option>
+                          <option value="Otro Examen Especializado">Otro Examen Especializado</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label class="font-weight-bold small text-gray-700">Fecha de Realización *</label>
+                        <input type="date" class="form-control" id="lab-fecha" required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BLOQUE 2: CARGA DE ARCHIVO DIGITAL Y ALERTA DE RESULTADO -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-primary">
+                    <h6 class="font-weight-bold text-primary mb-3"><i class="fas fa-cloud-arrow-up mr-2"></i>2. Adjuntar Documento y Estado</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-8">
+                        <label class="font-weight-bold small text-gray-700">Seleccionar Archivo (PDF o Imagen) *</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="lab-archivo" accept=".pdf,.png,.jpg,.jpeg" required>
+                          <label class="custom-file-label" for="lab-archivo" id="lab-archivo-label">Examinar y adjuntar resultado...</label>
+                        </div>
+                        <small class="form-text text-muted">Tamaño máximo recomendado: 10MB</small>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Resultado / Condición *</label>
+                        <select class="form-control font-weight-bold" id="lab-estado" required>
+                          <option value="Normal" class="text-success">Valores Normales</option>
+                          <option value="Alterado" class="text-warning">Valores Alterados (Atención)</option>
+                          <option value="Critico" class="text-danger">Crítico / Urgente (Notificar)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BLOQUE 3: NOTAS U OBSERVACIONES DEL LABORATORISTA -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-info">
+                    <h6 class="font-weight-bold text-info mb-3"><i class="fas fa-microscope mr-2"></i>3. Observaciones del Análisis</h6>
+                    <div class="form-group mb-0">
+                      <label class="font-weight-bold small text-gray-700">Observaciones o Notas Clínicas</label>
+                      <textarea class="form-control" id="lab-observaciones" rows="3" placeholder="Detalle cualquier valor relevante o sugerencia del laboratorio..."></textarea>
+                    </div>
+                  </div>
+
+                  <!-- BOTONES DE ACCIÓN -->
+                  <div class="d-flex justify-content-end align-items-center pt-2">
+                    <button type="reset" class="btn btn-outline-secondary mr-3 px-4">
+                      <i class="fas fa-eraser mr-1"></i> Limpiar Campos
+                    </button>
+                    <button type="submit" class="btn btn-warning text-dark font-weight-bold px-5 py-2 shadow-sm">
+                      <i class="fas fa-upload mr-2"></i> Subir Resultado
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISTA 5: GESTIONAR AGENDA DE MÉDICOS -->
+          <div id="sec-agenda" class="content-section" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Gestionar Agenda Médica</h1>
+              <span class="badge badge-primary p-2"><i class="fas fa-calendar-days mr-1"></i> Control de Citas y Horarios</span>
+            </div>
+
+            <!-- TARJETAS DE MÉTRICAS DE CITAS -->
+            <div class="row mb-4">
+              <div class="col-xl-3 col-md-6 mb-3">
+                <div class="card border-left-primary shadow-sm py-2">
+                  <div class="card-body py-2">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Citas Hoy</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">18 Citas</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 mb-3">
+                <div class="card border-left-success shadow-sm py-2">
+                  <div class="card-body py-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Atendidas</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">11 Citas</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 mb-3">
+                <div class="card border-left-warning shadow-sm py-2">
+                  <div class="card-body py-2">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pendientes</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">5 Citas</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 mb-3">
+                <div class="card border-left-danger shadow-sm py-2">
+                  <div class="card-body py-2">
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Canceladas / Ausentes</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">2 Citas</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- FORMULARIO: PROGRAMAR NUEVA CITA -->
+              <div class="col-lg-5 mb-4">
+                <div class="card shadow border-0">
+                  <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-calendar-plus mr-2"></i>Programar Nueva Cita</h6>
+                  </div>
+                  <div class="card-body p-4">
+                    <form id="form-programar-cita" novalidate>
+                      
+                      <div class="form-group">
+                        <label class="font-weight-bold small text-gray-700">Paciente *</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="age-paciente" placeholder="Buscar por Cédula o Nombre..." required>
+                          <div class="input-group-append">
+                            <button class="btn btn-primary" type="button" onclick="alert('Modo Diseño: Paciente encontrado')">
+                              <i class="fas fa-search"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="font-weight-bold small text-gray-700">Médico Tratante / Especialista *</label>
+                        <select class="form-control" id="age-medico" required>
+                          <option value="">Seleccionar Médico...</option>
+                          <option value="Dr. Carlos Mendoza - Medicina General">Dr. Carlos Mendoza (Medicina General)</option>
+                          <option value="Dra. Elena Rostrán - Pediatría">Dra. Elena Rostrán (Pediatría)</option>
+                          <option value="Dr. Roberto Silva - Ginecología">Dr. Roberto Silva (Ginecología)</option>
+                          <option value="Dra. Lucía Torres - Medicina Interna">Dra. Lucía Torres (Medicina Interna)</option>
+                        </select>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label class="font-weight-bold small text-gray-700">Fecha de Cita *</label>
+                          <input type="date" class="form-control" id="age-fecha" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label class="font-weight-bold small text-gray-700">Hora *</label>
+                          <input type="time" class="form-control" id="age-hora" required>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="font-weight-bold small text-gray-700">Tipo de Consulta *</label>
+                        <select class="form-control" id="age-tipo" required>
+                          <option value="Primer Ingreso">Primer Ingreso</option>
+                          <option value="Seguimiento / Control">Seguimiento / Control</option>
+                          <option value="Revisión de Exámenes">Revisión de Exámenes</option>
+                          <option value="Urgencia Menor">Urgencia Menor</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="font-weight-bold small text-gray-700">Notas o Motivo Breve</label>
+                        <textarea class="form-control" id="age-notas" rows="2" placeholder="Observaciones adicionales para la cita..."></textarea>
+                      </div>
+
+                      <button type="submit" class="btn btn-primary btn-block py-2 font-weight-bold shadow-sm">
+                        <i class="fas fa-calendar-check mr-2"></i> Agendar Cita
+                      </button>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TABLA / LISTADO DE CITAS DEL DÍA -->
+              <div class="col-lg-7 mb-4">
+                <div class="card shadow border-0">
+                  <div class="card-header py-3 bg-white d-flex align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-list-check mr-2"></i>Citas Programadas para Hoy</h6>
+                    <button class="btn btn-sm btn-outline-primary" onclick="alert('Modo Diseño: Actualizando agenda...')">
+                      <i class="fas fa-sync-alt mr-1"></i> Refrescar
+                    </button>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle mb-0">
+                        <thead class="thead-light">
+                          <tr class="small text-gray-700">
+                            <th>Hora</th>
+                            <th>Paciente</th>
+                            <th>Médico</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th class="text-center">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody class="small">
+                          <tr>
+                            <td class="font-weight-bold text-primary">08:00 AM</td>
+                            <td>María José López</td>
+                            <td>Dr. Carlos Mendoza</td>
+                            <td>Seguimiento</td>
+                            <td><span class="badge badge-success">Atendida</span></td>
+                            <td class="text-center">
+                              <button class="btn btn-sm btn-light text-info" title="Ver detalle"><i class="fas fa-eye"></i></button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="font-weight-bold text-primary">09:00 AM</td>
+                            <td>Juan Ramón Pérez</td>
+                            <td>Dra. Elena Rostrán</td>
+                            <td>Primer Ingreso</td>
+                            <td><span class="badge badge-warning">En Espera</span></td>
+                            <td class="text-center">
+                              <button class="btn btn-sm btn-light text-success" title="Iniciar Consulta"><i class="fas fa-check"></i></button>
+                              <button class="btn btn-sm btn-light text-danger" title="Cancelar"><i class="fas fa-xmark"></i></button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="font-weight-bold text-primary">10:30 AM</td>
+                            <td>Carmen Sofía Silva</td>
+                            <td>Dr. Roberto Silva</td>
+                            <td>Revisión Examen</td>
+                            <td><span class="badge badge-info">Programada</span></td>
+                            <td class="text-center">
+                              <button class="btn btn-sm btn-light text-success" title="Iniciar Consulta"><i class="fas fa-check"></i></button>
+                              <button class="btn btn-sm btn-light text-danger" title="Cancelar"><i class="fas fa-xmark"></i></button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="font-weight-bold text-primary">11:15 AM</td>
+                            <td>Roberto José Bermúdez</td>
+                            <td>Dra. Lucía Torres</td>
+                            <td>Urgencia Menor</td>
+                            <td><span class="badge badge-danger">Cancelada</span></td>
+                            <td class="text-center">
+                              <button class="btn btn-sm btn-light text-secondary" title="Reagendar"><i class="fas fa-rotate"></i></button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- VISTA 6: ESTADÍSTICAS DE ENFERMEDADES -->
+          <div id="sec-estadisticas" class="content-section" style="display: none;">
+            <h1 class="h3 mb-4 text-gray-800 font-weight-bold">Estadísticas de Enfermedades Frecuentes</h1>
+            <div class="card shadow p-4 border-0">
+              <p>Módulo epidemiológico MINSA y reportes de enfermedades.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
+
+  <!-- Script de Navegación e Interacción -->
+  <script src="../js/pages/admindscrip.js"></script>
+</body>
+</html>

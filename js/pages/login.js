@@ -1,121 +1,221 @@
-/* =========================================================
-   VITALIS TECH — pages/login.js
-   Comportamiento de la pantalla de login:
-   - Selector de rol (paciente / personal de salud)
-   - Mostrar/ocultar contraseña
-   - Validación básica del formulario
-   ========================================================= */
+// ==========================================
+// 1. NAVEGACIÓN Y CAMBIO DE SECCIONES (MENU)
+// ==========================================
+function mostrarSeccion(idSeccion, idNav) {
+  // Ocultar todas las secciones con la clase .content-section
+  const secciones = document.querySelectorAll('.content-section');
+  secciones.forEach(sec => {
+    sec.style.display = 'none';
+  });
 
-(function () {
-  const tabPaciente = document.getElementById("tabPaciente");
-  const tabAdmin = document.getElementById("tabAdmin");
-  const selectedRole = document.getElementById("selectedRole");
-  const authTitle = document.getElementById("authTitle");
-  const authSubtitle = document.getElementById("authSubtitle");
-  const registerPrompt = document.getElementById("registerPrompt");
-
-  const COPY = {
-    paciente: {
-      title: "Bienvenido de nuevo",
-      subtitle: "Ingresa tus datos para ver tus citas, resultados y más.",
-    },
-    admin: {
-      title: "Acceso de personal de salud",
-      subtitle: "Ingresa con las credenciales asignadas por tu centro de salud.",
-    },
-  };
-
-  function setActiveRole(role) {
-    selectedRole.value = role;
-
-    const isPaciente = role === "paciente";
-
-    tabPaciente.classList.toggle("is-active", isPaciente);
-    tabPaciente.setAttribute("aria-selected", String(isPaciente));
-
-    tabAdmin.classList.toggle("is-active", !isPaciente);
-    tabAdmin.setAttribute("aria-selected", String(!isPaciente));
-
-    authTitle.textContent = COPY[role].title;
-    authSubtitle.textContent = COPY[role].subtitle;
-
-    // El personal de salud no se autorregistra: sus cuentas
-    // las crea el centro, así que ocultamos el link de registro.
-    registerPrompt.classList.toggle("is-hidden", !isPaciente);
+  // Mostrar únicamente la sección seleccionada
+  const seccionActiva = document.getElementById('sec-' + idSeccion);
+  if (seccionActiva) {
+    seccionActiva.style.display = 'block';
   }
 
-  tabPaciente.addEventListener("click", function () {
-    setActiveRole("paciente");
+  // Actualizar la clase 'active' en el menú lateral
+  const itemsNav = document.querySelectorAll('.sidebar .nav-item');
+  itemsNav.forEach(item => {
+    item.classList.remove('active');
   });
 
-  tabAdmin.addEventListener("click", function () {
-    setActiveRole("admin");
-  });
-
-  // ---------- Mostrar / ocultar contraseña ----------
-
-  const togglePassword = document.getElementById("togglePassword");
-  const passwordInput = document.getElementById("password");
-
-  togglePassword.addEventListener("click", function () {
-    const isVisible = passwordInput.type === "text";
-    passwordInput.type = isVisible ? "password" : "text";
-    togglePassword.setAttribute(
-      "aria-label",
-      isVisible ? "Mostrar contraseña" : "Ocultar contraseña"
-    );
-  });
-
-  // ---------- Validación y envío ----------
-
-  const form = document.getElementById("loginForm");
-  const usernameInput = document.getElementById("username");
-  const usernameGroup = document.getElementById("usernameGroup");
-  const passwordGroup = document.getElementById("passwordGroup");
-
-  function isValidUsername(value) {
-    return value.trim().length >= 3;
+  const navActivo = document.getElementById(idNav);
+  if (navActivo) {
+    navActivo.classList.add('active');
   }
+}
 
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
+// Inicializar vista por defecto y gráficos al cargar el DOM
+document.addEventListener("DOMContentLoaded", () => {
+  // Cargar Dashboard Resumen como vista inicial
+  mostrarSeccion('resumen', 'nav-resumen');
+  
+  // Inicializar gráficos estadísticas
+  inicializarGraficosSalud();
+});
 
-    let isValid = true;
 
-    if (!isValidUsername(usernameInput.value)) {
-      usernameGroup.classList.add("has-error");
-      isValid = false;
-    } else {
-      usernameGroup.classList.remove("has-error");
+// ==========================================
+// 2. ACTUALIZAR INPUT FILE BOOTSTRAP
+// ==========================================
+document.addEventListener("change", (e) => {
+  if (e.target && e.target.id === "lab-archivo") {
+    const fileName = e.target.files[0]?.name || "Examinar y adjuntar resultado...";
+    const label = document.getElementById("lab-archivo-label");
+    if (label) label.textContent = fileName;
+  }
+});
+
+
+// ==========================================
+// 3. EVENTOS DE FORMULARIOS
+// ==========================================
+
+// Formulario: Registrar Paciente
+const formPaciente = document.getElementById("form-registrar-paciente");
+if (formPaciente) {
+  formPaciente.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alert("¡Paciente registrado exitosamente!");
+    formPaciente.reset();
+  });
+}
+
+// Formulario: Crear Expediente
+const formExpediente = document.getElementById("form-crear-expediente");
+if (formExpediente) {
+  formExpediente.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alert("¡Expediente clínico generado exitosamente!");
+    formExpediente.reset();
+  });
+}
+
+// Formulario: Consultas Médicas
+const formConsulta = document.getElementById("form-registrar-consulta");
+if (formConsulta) {
+  formConsulta.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alert("¡Consulta médica guardada exitosamente!");
+    formConsulta.reset();
+  });
+}
+
+// Formulario: Subir Resultados de Laboratorio
+const formLaboratorio = document.getElementById("form-subir-laboratorio");
+if (formLaboratorio) {
+  formLaboratorio.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const archivoInput = document.getElementById("lab-archivo");
+    const datosLaboratorio = {
+      paciente: document.getElementById("lab-paciente").value,
+      tipoExamen: document.getElementById("lab-tipo").value,
+      fecha: document.getElementById("lab-fecha").value,
+      estado: document.getElementById("lab-estado").value,
+      observaciones: document.getElementById("lab-observaciones").value,
+      nombreArchivo: archivoInput.files[0]?.name || "Ningún archivo seleccionado"
+    };
+
+    if (!datosLaboratorio.paciente || !datosLaboratorio.tipoExamen || !archivoInput.files.length) {
+      alert("Por favor completa todos los campos obligatorios (*) y adjunta un archivo.");
+      return;
     }
 
-    if (passwordInput.value.length < 6) {
-      passwordGroup.classList.add("has-error");
-      isValid = false;
-    } else {
-      passwordGroup.classList.remove("has-error");
+    console.log("Examen cargado listo para enviar al servidor:", datosLaboratorio);
+    alert(`¡Resultado de laboratorio subido exitosamente para el paciente!`);
+
+    formLaboratorio.reset();
+    const label = document.getElementById("lab-archivo-label");
+    if (label) label.textContent = "Examinar y adjuntar resultado...";
+  });
+}
+
+// Formulario: Programar Cita Médica
+const formAgenda = document.getElementById("form-programar-cita");
+if (formAgenda) {
+  formAgenda.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const nuevaCita = {
+      paciente: document.getElementById("age-paciente").value,
+      medico: document.getElementById("age-medico").value,
+      fecha: document.getElementById("age-fecha").value,
+      hora: document.getElementById("age-hora").value,
+      tipo: document.getElementById("age-tipo").value,
+      notas: document.getElementById("age-notas").value
+    };
+
+    if (!nuevaCita.paciente || !nuevaCita.medico || !nuevaCita.fecha || !nuevaCita.hora) {
+      alert("Por favor completa los campos obligatorios (*) de la cita.");
+      return;
     }
 
-    if (!isValid) return;
+    console.log("Cita agendada para guardar:", nuevaCita);
+    alert(`¡Cita programada con éxito para el ${nuevaCita.fecha} a las ${nuevaCita.hora}!`);
 
-    // Placeholder — aquí se conectará la llamada real al backend.
-    console.log("[Vitalis Tech] Intento de login:", {
-      role: selectedRole.value,
-      username: usernameInput.value.trim(),
+    formAgenda.reset();
+  });
+}
+
+
+// ==========================================
+// 4. GRÁFICOS INTERACTIVOS (CHART.JS)
+// ==========================================
+function inicializarGraficosSalud() {
+  // Gráfico de Barras: Enfermedades Frecuentes
+  const ctxBar = document.getElementById("chartEnfermedades");
+  if (ctxBar) {
+    new Chart(ctxBar, {
+      type: "bar",
+      data: {
+        labels: ["IRA (Infecc. Resp.)", "Hipertensión", "Diabetes T2", "Gastritis", "Dengue"],
+        datasets: [{
+          label: "Número de Casos",
+          data: [98, 75, 60, 33, 24],
+          backgroundColor: ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
     });
+  }
 
-    // Ejemplo de a dónde redirigir una vez exista el backend:
-    // const destino = selectedRole.value === "admin"
-    //   ? "dashboard-admin.html"
-    //   : "dashboard-paciente.html";
-    // window.location.href = destino;
+  // Gráfico Circular: Grupos Etarios
+  const ctxPie = document.getElementById("chartEdad");
+  if (ctxPie) {
+    new Chart(ctxPie, {
+      type: "doughnut",
+      data: {
+        labels: ["Pediatría (0-14)", "Jóvenes (15-29)", "Adultos (30-59)", "Adulto Mayor (60+)"],
+        datasets: [{
+          data: [25, 20, 35, 20],
+          backgroundColor: ["#36b9cc", "#1cc88a", "#4e73df", "#f6c23e"]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: "bottom" }
+        }
+      }
+    });
+  }
+}
+// Función para alternar entre las secciones del panel de administración
+function mostrarSeccion(idSeccion, idNav) {
+  // 1. Ocultar todas las secciones de contenido
+  const secciones = document.querySelectorAll('.content-section');
+  secciones.forEach(seccion => {
+    seccion.style.display = 'none';
   });
 
-  // Quita el estado de error apenas el usuario empieza a corregir
-  usernameInput.addEventListener("input", function () {
-    usernameGroup.classList.remove("has-error");
+  // 2. Mostrar únicamente la sección seleccionada
+  const seccionActiva = document.getElementById('sec-' + idSeccion);
+  if (seccionActiva) {
+    seccionActiva.style.display = 'block';
+  }
+
+  // 3. Remover la clase 'active' de todos los elementos del menú lateral
+  const navItems = document.querySelectorAll('.sidebar .nav-item');
+  navItems.forEach(item => {
+    item.classList.remove('active');
   });
-  passwordInput.addEventListener("input", function () {
-    passwordGroup.classList.remove("has-error");
-  });
-})();
+
+  // 4. Agregar la clase 'active' al menú correspondiente
+  const navActivo = document.getElementById(idNav);
+  if (navActivo) {
+    navActivo.classList.add('active');
+  }
+}
