@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitalis Tech - Panel del Paciente</title>
+
+  <!-- Bootstrap 4.6 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- SB Admin 2 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css">
+
+  <!-- Tu CSS Personalizado -->
+  <link rel="stylesheet" href="../css/pages/admindstyles.css">
+</head>
+
+<body id="page-top">
+  <div id="wrapper">
+
+    <!-- ================= MENÚ LATERAL (SIDEBAR) ================= -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Logo personalizable con imagen y fallback idéntico al admin -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
+        <div class="sidebar-brand-icon">
+          <img src="../assets/logo/logo.png" alt="Vitalis Tech Logo" style="max-height: 38px; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+          <i class="fas fa-heart-pulse text-info" style="display:none;"></i>
+        </div>
+        <div class="sidebar-brand-text mx-2">Vitalis <span>Tech</span></div>
+      </a>
+
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard General -->
+      <li class="nav-item active" id="nav-pac-inicio">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('inicio', 'nav-pac-inicio')">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Dashboard General</span>
+        </a>
+      </li>
+
+      <hr class="sidebar-divider">
+      <div class="sidebar-heading">MÓDULOS DE SALUD</div>
+
+      <!-- Nav Item - Agendar Cita -->
+      <li class="nav-item" id="nav-pac-agendar">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('agendar', 'nav-pac-agendar')">
+          <i class="fas fa-fw fa-calendar-plus"></i>
+          <span>Agendar Cita</span>
+        </a>
+      </li>
+
+      <!-- Nav Item - Consultas Médicas -->
+      <li class="nav-item" id="nav-pac-citas">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('citas', 'nav-pac-citas')">
+          <i class="fas fa-fw fa-notes-medical"></i>
+          <span>Consultas Médicas</span>
+        </a>
+      </li>
+
+      <!-- Nav Item - Resultados de Laboratorio -->
+      <li class="nav-item" id="nav-pac-laboratorio">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('laboratorio', 'nav-pac-laboratorio')">
+          <i class="fas fa-fw fa-file-medical-alt"></i>
+          <span>Resultados de Laboratorio</span>
+        </a>
+      </li>
+
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Cerrar Sesión -->
+      <li class="nav-item mb-3">
+        <a class="nav-link text-danger font-weight-bold" href="../index.html" onclick="cerrarSesion()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </li>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar idéntica -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+          <span class="navbar-text font-weight-bold text-gray-800 ml-3">
+            Vitalis Tech - Panel del Paciente
+          </span>
+
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small font-weight-bold">Paciente Demo</span>
+                <i class="fas fa-user-circle fa-2x text-gray-400 align-middle"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                <a class="dropdown-item text-danger" href="../index.html" onclick="cerrarSesion()">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Cerrar Sesión
+                </a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- VISTA 1: DASHBOARD GENERAL -->
+          <section id="sec-pac-inicio" class="content-section-paciente">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Vista General</h1>
+            </div>
+
+            <!-- Tarjetas KPI -->
+            <div class="row">
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Próxima Cita</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">Mañana</div>
+                    <div class="text-xs text-gray-500 mt-1">10:00 AM - Dr. Gómez</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Tratamiento Activo</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">Losartán</div>
+                    <span class="badge badge-alta mt-2">Cada 12 hrs</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Citas Agendadas</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">1 Activa</div>
+                    <span class="badge badge-media mt-2">Medicina General</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Laboratorios Listos</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">2 Archivos</div>
+                    <span class="badge badge-normal mt-2">Descargables</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- VISTA 2: AGENDAR CITA -->
+          <section id="sec-pac-agendar" class="content-section-paciente" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Agendar Cita</h1>
+            </div>
+            <div class="card shadow mb-4">
+              <div class="card-body">
+                <form id="form-agendar-cita-paciente">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Especialidad</label>
+                      <select class="form-control" id="select-especialidad" required>
+                        <option value="">-- Seleccionar --</option>
+                        <option value="Medicina General">Medicina General</option>
+                        <option value="Pediatría">Pediatría</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Médico</label>
+                      <select class="form-control" id="select-medico" required>
+                        <option value="">-- Selecciona Especialidad --</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Confirmar Cita</button>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- VISTA 3: CONSULTAS MÉDICAS -->
+          <section id="sec-pac-citas" class="content-section-paciente" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Historial de Consultas</h1>
+            </div>
+            <div class="card shadow mb-4">
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Médico</th>
+                      <th>Especialidad</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>15/01/2026</td>
+                      <td>Dr. Roberto Gómez</td>
+                      <td>Medicina General</td>
+                      <td><span class="badge badge-normal">Atendido</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- VISTA 4: LABORATORIOS -->
+          <section id="sec-pac-laboratorio" class="content-section-paciente" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Resultados de Laboratorio</h1>
+            </div>
+            <div class="card shadow mb-4">
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Examen</th>
+                      <th>Fecha</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Hemograma Completo</td>
+                      <td>20/08/2026</td>
+                      <td><button class="btn btn-sm btn-primary" onclick="descargarResultado('Hemograma')">Descargar PDF</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Vitalis Tech 2026</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
+  <script src="../js/pages/paciente.js"></script>
+</body>
+</html>

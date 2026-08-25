@@ -29,7 +29,8 @@
 </head>
 <body>
 
-  <div class="auth-page">
+  <div class="auth-shell">
+  <div class="auth-page auth-page--tall">
 
     <!-- ---------- PANEL DE MARCA (oculto en móvil) ---------- -->
     <aside class="auth-brand">
@@ -96,8 +97,7 @@
 
           <h1 class="auth-card__title">Crea tu cuenta</h1>
           <p class="auth-card__subtitle">
-            Regístrate como paciente para agendar citas y ver tu historial médico.
-            Esta cuenta es solo para pacientes — si eres personal de salud, tu centro te asigna el acceso.
+            Solo para pacientes — el personal de salud recibe su acceso del centro.
           </p>
 
           <form id="registerForm" novalidate>
@@ -190,7 +190,7 @@
               Acepto los <a href="#" class="form-link">Términos y condiciones</a> y el tratamiento de mis datos de salud conforme a la política de privacidad.
             </label>
 
-            <button class="btn btn--primary" id="btnSubmit" type="submit" style="width: 100%; justify-content: center;">
+            <button class="btn btn--primary" id="btnSubmit" type="submit" style="width: 100%; justify-content: center; padding: 8px 20px; font-size: 0.85rem;">
               Crear mi cuenta
             </button>
           </form>
@@ -201,6 +201,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- Lógica propia de esta página -->
