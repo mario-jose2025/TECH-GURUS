@@ -37,7 +37,7 @@
 
       <!-- Vista Dashboard -->
       <li class="nav-item active" id="nav-resumen">
-        <a class="nav-link" href="#" onclick="mostrarSeccion('resumen', 'nav-resumen')">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('resumen', 'nav-resumen', event)">
           <i class="fas fa-fw fa-chart-line"></i>
           <span>Dashboard General</span>
         </a>
@@ -48,15 +48,23 @@
 
       <!-- 1. Registrar Pacientes -->
       <li class="nav-item" id="nav-reg-pacientes">
-        <a class="nav-link" href="#" onclick="mostrarSeccion('reg-pacientes', 'nav-reg-pacientes')">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('reg-pacientes', 'nav-reg-pacientes', event)">
           <i class="fas fa-fw fa-user-plus"></i>
           <span>Registrar Pacientes</span>
         </a>
       </li>
 
+      <!-- 1.5. Gestionar Médicos (registrar / editar / dar de baja) -->
+      <li class="nav-item" id="nav-medicos">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('medicos', 'nav-medicos', event)">
+          <i class="fas fa-fw fa-user-doctor"></i>
+          <span>Gestionar Médicos</span>
+        </a>
+      </li>
+
       <!-- 2. Crear Expediente Clínico -->
       <li class="nav-item" id="nav-expediente">
-        <a class="nav-link" href="#" onclick="mostrarSeccion('expediente', 'nav-expediente')">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('expediente', 'nav-expediente', event)">
           <i class="fas fa-fw fa-folder-plus"></i>
           <span>Crear Expediente</span>
         </a>
@@ -64,7 +72,7 @@
 
       <!-- 3. Registrar Consultas Médicas -->
       <li class="nav-item" id="nav-consultas">
-        <a class="nav-link" href="#" onclick="mostrarSeccion('consultas', 'nav-consultas')">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('consultas', 'nav-consultas', event)">
           <i class="fas fa-fw fa-notes-medical"></i>
           <span>Consultas Médicas</span>
         </a>
@@ -72,7 +80,7 @@
 
       <!-- 4. Subir Resultados de Laboratorio -->
       <li class="nav-item" id="nav-laboratorio">
-        <a class="nav-link" href="#" onclick="mostrarSeccion('laboratorio', 'nav-laboratorio')">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('laboratorio', 'nav-laboratorio', event)">
           <i class="fas fa-fw fa-file-waveform"></i>
           <span>Subir Laboratorio</span>
         </a>
@@ -80,7 +88,7 @@
 
       <!-- 5. Gestionar Agenda de Médicos -->
       <li class="nav-item" id="nav-agenda">
-        <a class="nav-link" href="#" onclick="mostrarSeccion('agenda', 'nav-agenda')">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('agenda', 'nav-agenda', event)">
           <i class="fas fa-fw fa-calendar-days"></i>
           <span>Agenda Médica</span>
         </a>
@@ -88,9 +96,17 @@
 
       <!-- 6. Estadísticas de Enfermedades -->
       <li class="nav-item" id="nav-estadisticas">
-        <a class="nav-link" href="#" onclick="mostrarSeccion('estadisticas', 'nav-estadisticas')">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('estadisticas', 'nav-estadisticas', event)">
           <i class="fas fa-fw fa-chart-pie"></i>
           <span>Estadísticas de Salud</span>
+        </a>
+      </li>
+
+      <!-- 7. Mi Perfil -->
+      <li class="nav-item" id="nav-admin-perfil">
+        <a class="nav-link" href="#" onclick="mostrarSeccion('perfil', 'nav-admin-perfil', event)">
+          <i class="fas fa-fw fa-user-gear"></i>
+          <span>Mi Perfil</span>
         </a>
       </li>
 
@@ -111,10 +127,24 @@
         <!-- Topbar Superior -->
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow-sm justify-content-between">
           <h1 class="h5 mb-0 text-gray-800 font-weight-bold">Vitalis Tech - Panel del Personal de Salud</h1>
-          <div class="user-info-top d-flex align-items-center">
-            <span class="mr-3 text-gray-600 small font-weight-bold">Dr. Personal de Salud</span>
-            <div class="img-profile rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:38px; height:38px;">
-              <i class="fas fa-user-doctor"></i>
+
+          <div class="dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="mr-3 text-gray-600 small font-weight-bold" id="topbar-admin-nombre">Dr. Personal de Salud</span>
+              <div class="img-profile rounded-circle bg-primary text-white d-flex align-items-center justify-content-center overflow-hidden" style="width:38px; height:38px;" id="topbar-admin-avatar">
+                <i class="fas fa-user-doctor"></i>
+              </div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="adminDropdown">
+              <a class="dropdown-item" href="#" onclick="mostrarSeccion('perfil', 'nav-admin-perfil', event)">
+                <i class="fas fa-user-gear fa-sm fa-fw mr-2 text-gray-400"></i>
+                Mi Perfil
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item text-danger" href="login.html">
+                <i class="fas fa-right-from-bracket fa-sm fa-fw mr-2 text-gray-400"></i>
+                Cerrar Sesión
+              </a>
             </div>
           </div>
         </nav>
@@ -253,6 +283,141 @@
                   </div>
 
                 </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISTA 1.5: GESTIONAR MÉDICOS -->
+          <div id="sec-medicos" class="content-section" style="display: none;">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Gestionar Médicos</h1>
+              <span class="badge badge-primary p-2"><i class="fas fa-user-doctor mr-1"></i> Directorio de Personal Médico</span>
+            </div>
+
+            <div class="card shadow mb-4 border-0">
+              <div class="card-header py-3 bg-primary text-white d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold" id="tituloFormMedico"><i class="fas fa-user-doctor mr-2"></i>Registrar Nuevo Médico</h6>
+                <small class="text-white-50">* Campos obligatorios</small>
+              </div>
+
+              <div class="card-body p-4">
+                <form id="form-registrar-medico" novalidate>
+                  <!-- Guarda el id del médico cuando se está editando; vacío = registro nuevo -->
+                  <input type="hidden" id="medico-edit-id" value="">
+
+                  <!-- BLOQUE 1: DATOS PERSONALES -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-primary">
+                    <h6 class="font-weight-bold text-primary mb-3"><i class="fas fa-id-card mr-2"></i>1. Información Personal</h6>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-2">
+                        <label class="font-weight-bold small text-gray-700">Tratamiento *</label>
+                        <select class="form-control" id="med-tratamiento" required>
+                          <option value="Dr.">Dr.</option>
+                          <option value="Dra.">Dra.</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-5">
+                        <label class="font-weight-bold small text-gray-700">Nombres *</label>
+                        <input type="text" class="form-control" id="med-nombres" placeholder="Ej. Roberto" required>
+                      </div>
+                      <div class="form-group col-md-5">
+                        <label class="font-weight-bold small text-gray-700">Apellidos *</label>
+                        <input type="text" class="form-control" id="med-apellidos" placeholder="Ej. Gómez López" required>
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Cédula de Identidad</label>
+                        <input type="text" class="form-control" id="med-cedula" placeholder="001-000000-0000X">
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Teléfono de Contacto *</label>
+                        <input type="tel" class="form-control" id="med-telefono" placeholder="8888-8888" required>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="med-correo" placeholder="medico@vitalistech.com">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BLOQUE 2: DATOS PROFESIONALES -->
+                  <div class="bg-light p-3 rounded mb-4 border-left-info">
+                    <h6 class="font-weight-bold text-info mb-3"><i class="fas fa-stethoscope mr-2"></i>2. Información Profesional</h6>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Especialidad *</label>
+                        <select class="form-control font-weight-bold text-dark" id="med-especialidad" required>
+                          <option value="">Seleccionar...</option>
+                          <option value="medicina-general">Medicina General</option>
+                          <option value="pediatria">Pediatría</option>
+                          <option value="ginecologia">Ginecología</option>
+                          <option value="odontologia">Odontología</option>
+                        </select>
+                        <small class="form-text text-muted">Debe coincidir con las especialidades que ve el paciente al agendar.</small>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">No. de Colegiado / Licencia</label>
+                        <input type="text" class="form-control" id="med-licencia" placeholder="Ej. MINSA-12345">
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label class="font-weight-bold small text-gray-700">Estado *</label>
+                        <select class="form-control font-weight-bold" id="med-estado" required>
+                          <option value="Activo">Activo</option>
+                          <option value="Inactivo">Inactivo (de baja / ya no labora aquí)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                      <label class="font-weight-bold small text-gray-700">Horario de Atención</label>
+                      <input type="text" class="form-control" id="med-horario" placeholder="Ej. Lunes a Viernes, 8:00am - 4:00pm">
+                    </div>
+                  </div>
+
+                  <!-- BOTONES DE ACCIÓN -->
+                  <div class="d-flex justify-content-end align-items-center pt-2">
+                    <button type="button" id="btn-cancelar-edicion-medico" class="btn btn-outline-secondary mr-3 px-4" style="display: none;" onclick="cancelarEdicionMedico()">
+                      <i class="fas fa-times mr-1"></i> Cancelar Edición
+                    </button>
+                    <button type="reset" class="btn btn-outline-secondary mr-3 px-4">
+                      <i class="fas fa-eraser mr-1"></i> Limpiar Campos
+                    </button>
+                    <button type="submit" id="btn-guardar-medico" class="btn btn-primary px-5 py-2 font-weight-bold shadow-sm">
+                      <i class="fas fa-save mr-2"></i> Guardar Médico
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+
+            <!-- TABLA: MÉDICOS REGISTRADOS -->
+            <div class="card shadow border-0">
+              <div class="card-header py-3 bg-white d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-list-check mr-2"></i>Médicos Registrados</h6>
+                <small class="text-muted">Esta lista alimenta el selector de médicos del paciente al agendar su cita</small>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="thead-light">
+                      <tr class="small text-gray-700">
+                        <th>Nombre</th>
+                        <th>Especialidad</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody class="small" id="tabla-medicos-body">
+                      <!-- Las filas se generan dinámicamente desde admindscrip.js -->
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -703,7 +868,7 @@
                 <div class="card shadow border-0">
                   <div class="card-header py-3 bg-white d-flex align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-list-check mr-2"></i>Citas Programadas para Hoy</h6>
-                    <button class="btn btn-sm btn-outline-primary" onclick="alert('Modo Diseño: Actualizando agenda...')">
+                    <button class="btn btn-sm btn-outline-primary" onclick="renderCitasAdmin()">
                       <i class="fas fa-sync-alt mr-1"></i> Refrescar
                     </button>
                   </div>
@@ -712,57 +877,16 @@
                       <table class="table table-hover align-middle mb-0">
                         <thead class="thead-light">
                           <tr class="small text-gray-700">
-                            <th>Hora</th>
+                            <th>Fecha / Hora</th>
                             <th>Paciente</th>
                             <th>Médico</th>
-                            <th>Tipo</th>
+                            <th>Especialidad</th>
                             <th>Estado</th>
                             <th class="text-center">Acciones</th>
                           </tr>
                         </thead>
-                        <tbody class="small">
-                          <tr>
-                            <td class="font-weight-bold text-primary">08:00 AM</td>
-                            <td>María José López</td>
-                            <td>Dr. Carlos Mendoza</td>
-                            <td>Seguimiento</td>
-                            <td><span class="badge badge-success">Atendida</span></td>
-                            <td class="text-center">
-                              <button class="btn btn-sm btn-light text-info" title="Ver detalle"><i class="fas fa-eye"></i></button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="font-weight-bold text-primary">09:00 AM</td>
-                            <td>Juan Ramón Pérez</td>
-                            <td>Dra. Elena Rostrán</td>
-                            <td>Primer Ingreso</td>
-                            <td><span class="badge badge-warning">En Espera</span></td>
-                            <td class="text-center">
-                              <button class="btn btn-sm btn-light text-success" title="Iniciar Consulta"><i class="fas fa-check"></i></button>
-                              <button class="btn btn-sm btn-light text-danger" title="Cancelar"><i class="fas fa-xmark"></i></button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="font-weight-bold text-primary">10:30 AM</td>
-                            <td>Carmen Sofía Silva</td>
-                            <td>Dr. Roberto Silva</td>
-                            <td>Revisión Examen</td>
-                            <td><span class="badge badge-info">Programada</span></td>
-                            <td class="text-center">
-                              <button class="btn btn-sm btn-light text-success" title="Iniciar Consulta"><i class="fas fa-check"></i></button>
-                              <button class="btn btn-sm btn-light text-danger" title="Cancelar"><i class="fas fa-xmark"></i></button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="font-weight-bold text-primary">11:15 AM</td>
-                            <td>Roberto José Bermúdez</td>
-                            <td>Dra. Lucía Torres</td>
-                            <td>Urgencia Menor</td>
-                            <td><span class="badge badge-danger">Cancelada</span></td>
-                            <td class="text-center">
-                              <button class="btn btn-sm btn-light text-secondary" title="Reagendar"><i class="fas fa-rotate"></i></button>
-                            </td>
-                          </tr>
+                        <tbody class="small" id="tabla-citas-admin-body">
+                          <!-- Las filas se generan dinámicamente desde admindscrip.js (localStorage) -->
                         </tbody>
                       </table>
                     </div>
@@ -875,7 +999,178 @@
   </div>
 </section>
 
-        
+<!-- VISTA: MI PERFIL (Personal de Salud / Admin) -->
+<div id="sec-perfil" class="content-section" style="display: none;">
+
+  <!-- Encabezado de la Sección -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Mi Perfil</h1>
+      <p class="text-muted small mb-0">Consulta y actualiza tu información personal, tu foto y tu acceso.</p>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- COLUMNA IZQUIERDA: FOTO Y RESUMEN DE LA CUENTA -->
+    <div class="col-lg-4 mb-4">
+      <div class="card shadow border-0">
+        <div class="card-body text-center p-4">
+
+          <!-- Foto de perfil con opción de cambiarla -->
+          <div class="position-relative d-inline-block mb-3">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto overflow-hidden"
+                 style="width: 110px; height: 110px; font-size: 2.2rem; font-weight: 700;" id="perfil-admin-avatar">
+              <span id="perfil-admin-avatar-iniciales">PS</span>
+              <img src="" alt="" id="perfil-admin-avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+            </div>
+            <label for="perfil-admin-foto-input" class="btn btn-sm btn-primary rounded-circle position-absolute shadow-sm"
+                   style="bottom: 0; right: 0; width: 34px; height: 34px; padding: 0; line-height: 34px;" title="Cambiar foto">
+              <i class="fas fa-camera"></i>
+            </label>
+            <input type="file" id="perfil-admin-foto-input" accept="image/png,image/jpeg" class="d-none">
+          </div>
+
+          <div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="perfil-admin-quitar-foto">
+              <i class="fas fa-trash-alt mr-1"></i> Quitar foto
+            </button>
+          </div>
+
+          <hr>
+
+          <h6 class="font-weight-bold text-gray-800 mb-0" id="perfil-admin-nombre-completo">Dr. Personal de Salud</h6>
+          <p class="text-muted small mb-3" id="perfil-admin-usuario-actual">@personal.salud</p>
+
+          <div class="text-left small">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-gray-600">Rol</span>
+              <span class="font-weight-bold text-gray-800">Personal de Salud</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-gray-600">Cargo</span>
+              <span class="font-weight-bold text-gray-800" id="perfil-admin-cargo-resumen">Médico General</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-gray-600">Miembro desde</span>
+              <span class="font-weight-bold text-gray-800" id="perfil-admin-fecha-ingreso">10/01/2026</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-600">Estado de cuenta</span>
+              <span class="badge badge-success">Activa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: FORMULARIOS DE EDICIÓN -->
+    <div class="col-lg-8 mb-4">
+
+      <!-- Tarjeta 1: Datos personales y laborales -->
+      <div class="card shadow border-0 mb-4">
+        <div class="card-header py-3 bg-white">
+          <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-id-card mr-2"></i>Datos Personales y Laborales</h6>
+        </div>
+        <div class="card-body p-4">
+          <form id="form-editar-perfil-admin" novalidate>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="perfil-admin-nombres" class="font-weight-bold small text-gray-700">Nombres *</label>
+                <input type="text" class="form-control" id="perfil-admin-nombres" name="nombres" placeholder="Ej. Roberto" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="perfil-admin-apellidos" class="font-weight-bold small text-gray-700">Apellidos *</label>
+                <input type="text" class="form-control" id="perfil-admin-apellidos" name="apellidos" placeholder="Ej. Gómez" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="perfil-admin-correo" class="font-weight-bold small text-gray-700">Correo Electrónico *</label>
+                <input type="email" class="form-control" id="perfil-admin-correo" name="correo" placeholder="tu@correo.com" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="perfil-admin-telefono" class="font-weight-bold small text-gray-700">Teléfono *</label>
+                <input type="tel" class="form-control" id="perfil-admin-telefono" name="telefono" placeholder="8888-8888" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="perfil-admin-usuario" class="font-weight-bold small text-gray-700">Usuario *</label>
+                <input type="text" class="form-control" id="perfil-admin-usuario" name="usuario" placeholder="Ej. rgomez" required minlength="4">
+                <small class="form-text text-muted">Con este usuario inicias sesión (sin espacios).</small>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="perfil-admin-cargo" class="font-weight-bold small text-gray-700">Cargo / Puesto *</label>
+                <select class="form-control" id="perfil-admin-cargo" name="cargo" required>
+                  <option value="Médico General">Médico General</option>
+                  <option value="Pediatra">Pediatra</option>
+                  <option value="Gineco-Obstetra">Gineco-Obstetra</option>
+                  <option value="Enfermero/a">Enfermero/a</option>
+                  <option value="Laboratorista">Laboratorista</option>
+                  <option value="Administrador del Centro">Administrador del Centro</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end pt-2">
+              <button type="submit" class="btn btn-primary px-4 font-weight-bold shadow-sm">
+                <i class="fas fa-save mr-2"></i> Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Cambiar contraseña -->
+      <div class="card shadow border-0">
+        <div class="card-header py-3 bg-white">
+          <h6 class="m-0 font-weight-bold text-danger"><i class="fas fa-lock mr-2"></i>Cambiar Contraseña</h6>
+        </div>
+        <div class="card-body p-4">
+          <form id="form-cambiar-password-admin" novalidate>
+            <div class="form-group">
+              <label for="perfil-admin-password-actual" class="font-weight-bold small text-gray-700">Contraseña Actual *</label>
+              <input type="password" class="form-control" id="perfil-admin-password-actual" name="password_actual" placeholder="••••••••" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="perfil-admin-password-nueva" class="font-weight-bold small text-gray-700">Nueva Contraseña *</label>
+                <input type="password" class="form-control" id="perfil-admin-password-nueva" name="password_nueva" placeholder="••••••••" required minlength="6">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="perfil-admin-password-confirmar" class="font-weight-bold small text-gray-700">Confirmar Nueva Contraseña *</label>
+                <input type="password" class="form-control" id="perfil-admin-password-confirmar" name="password_confirmar" placeholder="••••••••" required>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end pt-2">
+              <button type="submit" class="btn btn-danger px-4 font-weight-bold shadow-sm">
+                <i class="fas fa-key mr-2"></i> Actualizar Contraseña
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
 
    <!-- Scripts CDN -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

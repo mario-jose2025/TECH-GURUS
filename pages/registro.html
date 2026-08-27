@@ -22,6 +22,7 @@
   <!-- Componentes reutilizables -->
   <link rel="stylesheet" href="../css/components/buttons.css" />
   <link rel="stylesheet" href="../css/components/form.css" />
+  <link rel="stylesheet" href="../css/components/modal.css" />
 
   <!-- Estilos propios de esta página (reutiliza el layout de login.css) -->
   <link rel="stylesheet" href="../css/pages/login.css" />
@@ -187,7 +188,7 @@
 
             <label class="form-terms">
               <input type="checkbox" id="terms" name="terms" required />
-              Acepto los <a href="#" class="form-link">Términos y condiciones</a> y el tratamiento de mis datos de salud conforme a la política de privacidad.
+              Acepto los <a href="#" class="form-link" id="linkTerminos">Términos y condiciones</a> y el tratamiento de mis datos de salud conforme a la política de privacidad.
             </label>
 
             <button class="btn btn--primary" id="btnSubmit" type="submit" style="width: 100%; justify-content: center; padding: 8px 20px; font-size: 0.85rem;">
@@ -202,6 +203,61 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- ==================== MODAL: TÉRMINOS Y CONDICIONES ==================== -->
+  <div class="modal-overlay" id="modalTerminos" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTerminosTitulo">
+      <div class="modal-card__header">
+        <h2 class="modal-card__title" id="modalTerminosTitulo">Términos y Condiciones</h2>
+        <button type="button" class="modal-card__close" id="cerrarModalTerminos" aria-label="Cerrar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-card__body">
+        <h3>1. Objeto del servicio</h3>
+        <p>
+          Vitalis Tech es una plataforma que conecta a pacientes con centros de salud en Nicaragua,
+          facilitando el agendamiento de citas, la consulta de resultados de laboratorio y el
+          seguimiento de tratamientos médicos. Al crear una cuenta, aceptas usar la plataforma
+          únicamente para fines relacionados con tu propia atención médica.
+        </p>
+
+        <h3>2. Registro y responsabilidad de la cuenta</h3>
+        <p>
+          Eres responsable de la veracidad de los datos que proporcionas al registrarte, así como
+          de mantener la confidencialidad de tu usuario y contraseña. Notifica a tu centro de salud
+          si sospechas un uso no autorizado de tu cuenta.
+        </p>
+
+        <h3>3. Privacidad de tus datos de salud</h3>
+        <p>
+          La información médica que compartas (historial clínico, resultados de laboratorio,
+          diagnósticos) es de carácter confidencial y solo será accesible por el personal de salud
+          autorizado que te atiende. No compartimos tus datos con terceros sin tu consentimiento,
+          salvo cuando la ley lo requiera.
+        </p>
+
+        <h3>4. Alcance del servicio</h3>
+        <p>
+          Vitalis Tech es una herramienta de gestión y agendamiento — no sustituye una consulta
+          médica presencial ni debe usarse para situaciones de emergencia. Ante una urgencia,
+          acude de inmediato al centro de salud más cercano o llama a los servicios de emergencia.
+        </p>
+
+        <h3>5. Modificaciones</h3>
+        <p>
+          Estos términos pueden actualizarse periódicamente para reflejar mejoras en la plataforma
+          o cambios normativos. Te notificaremos ante cambios relevantes que afecten tus derechos
+          como usuario.
+        </p>
+      </div>
+
+      <div class="modal-card__footer">
+        <button type="button" class="btn btn--primary" id="entendidoModalTerminos">Entendido</button>
+      </div>
+    </div>
   </div>
 
   <!-- Lógica propia de esta página -->

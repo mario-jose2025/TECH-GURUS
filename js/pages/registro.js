@@ -146,4 +146,38 @@
       input.closest(".form-group").classList.remove("has-error");
     });
   });
+
+  // ---------- Modal de Términos y Condiciones ----------
+
+  const linkTerminos = document.getElementById("linkTerminos");
+  const modalTerminos = document.getElementById("modalTerminos");
+  const cerrarModalTerminos = document.getElementById("cerrarModalTerminos");
+  const entendidoModalTerminos = document.getElementById("entendidoModalTerminos");
+
+  function abrirModalTerminos(event) {
+    event.preventDefault();
+    modalTerminos.classList.add("is-open");
+    modalTerminos.setAttribute("aria-hidden", "false");
+  }
+
+  function cerrarModal() {
+    modalTerminos.classList.remove("is-open");
+    modalTerminos.setAttribute("aria-hidden", "true");
+  }
+
+  linkTerminos.addEventListener("click", abrirModalTerminos);
+  cerrarModalTerminos.addEventListener("click", cerrarModal);
+  entendidoModalTerminos.addEventListener("click", cerrarModal);
+
+  // Cerrar al hacer clic fuera de la tarjeta (en el fondo oscuro)
+  modalTerminos.addEventListener("click", function (event) {
+    if (event.target === modalTerminos) cerrarModal();
+  });
+
+  // Cerrar con la tecla Escape
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && modalTerminos.classList.contains("is-open")) {
+      cerrarModal();
+    }
+  });
 })();

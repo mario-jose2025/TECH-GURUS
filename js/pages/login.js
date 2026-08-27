@@ -70,14 +70,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // Credenciales temporales de prueba para Admin
         if (usuario === "admin" && password === "admin123") {
           alert("¡Acceso exitoso al panel de administración!");
-          window.location.href = "admin.html"; // O la ruta a tu panel de admin
+          window.location.href = "admind.html"; // O la ruta a tu panel de admin
         } else {
           alert("Usuario o contraseña de administrador incorrectos.");
         }
       } else {
         // Acceso para Paciente
         alert(`¡Bienvenido, ${usuario}!`);
-        window.location.href = "paciente.html"; // Te manda al panel del paciente que diseñamos antes
+        window.location.href = "pacientes.html"; // Te manda al panel del paciente que diseñamos antes
       }
     });
   }

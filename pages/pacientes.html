@@ -37,7 +37,7 @@
 
       <!-- Nav Item - Dashboard General -->
       <li class="nav-item active" id="nav-pac-inicio">
-        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('inicio', 'nav-pac-inicio')">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('inicio', 'nav-pac-inicio', event)">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard General</span>
         </a>
@@ -48,7 +48,7 @@
 
       <!-- Nav Item - Agendar Cita -->
       <li class="nav-item" id="nav-pac-agendar">
-        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('agendar', 'nav-pac-agendar')">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('agendar', 'nav-pac-agendar', event)">
           <i class="fas fa-fw fa-calendar-plus"></i>
           <span>Agendar Cita</span>
         </a>
@@ -56,7 +56,7 @@
 
       <!-- Nav Item - Consultas Médicas / Historial -->
       <li class="nav-item" id="nav-pac-citas">
-        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('citas', 'nav-pac-citas')">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('citas', 'nav-pac-citas', event)">
           <i class="fas fa-fw fa-notes-medical"></i>
           <span>Historial de Consultas</span>
         </a>
@@ -64,7 +64,7 @@
 
       <!-- Nav Item - Resultados de Laboratorio -->
       <li class="nav-item" id="nav-pac-laboratorio">
-        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('laboratorio', 'nav-pac-laboratorio')">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('laboratorio', 'nav-pac-laboratorio', event)">
           <i class="fas fa-fw fa-file-medical-alt"></i>
           <span>Resultados de Exámenes</span>
         </a>
@@ -72,9 +72,17 @@
 
       <!-- Nav Item - Recordatorios Automáticos (Agregado para cumplir la lista completa) -->
       <li class="nav-item" id="nav-pac-recordatorios">
-        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('recordatorios', 'nav-pac-recordatorios')">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('recordatorios', 'nav-pac-recordatorios', event)">
           <i class="fas fa-fw fa-bell"></i>
           <span>Recordatorios</span>
+        </a>
+      </li>
+
+      <!-- Nav Item - Mi Perfil -->
+      <li class="nav-item" id="nav-pac-perfil">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('perfil', 'nav-pac-perfil', event)">
+          <i class="fas fa-fw fa-user-gear"></i>
+          <span>Mi Perfil</span>
         </a>
       </li>
 
@@ -107,9 +115,16 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small font-weight-bold">Paciente Demo</span>
-                <i class="fas fa-user-circle fa-2x text-gray-400 align-middle"></i>
+                <div class="rounded-circle bg-transparent d-inline-flex align-items-center justify-content-center overflow-hidden align-middle" style="width:32px; height:32px;" id="topbar-paciente-avatar">
+                  <i class="fas fa-user-circle fa-2x text-gray-400"></i>
+                </div>
               </a>
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                <a class="dropdown-item" href="#" onclick="mostrarSeccionPaciente('perfil', 'nav-pac-perfil', event)">
+                  <i class="fas fa-user-gear fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Mi Perfil
+                </a>
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-danger" href="../index.html" onclick="cerrarSesion()">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Cerrar Sesión
@@ -122,6 +137,9 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
+
+<!-- VISTA: DASHBOARD GENERAL (Paciente) -->
+<section id="sec-pac-inicio" class="content-section-paciente">
 
          <!-- SECCIÓN INFERIOR DEL DASHBOARD GENERAL -->
 <div class="row mt-4">
@@ -136,7 +154,7 @@
         <div class="row text-center">
           
           <div class="col-md-4 mb-3">
-            <div class="p-3 bg-light rounded border-bottom-primary shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('agendar', 'nav-pac-agendar')">
+            <div class="p-3 bg-light rounded border-bottom-primary shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('agendar', 'nav-pac-agendar', event)">
               <i class="fas fa-calendar-plus fa-2x text-primary mb-2"></i>
               <h6 class="font-weight-bold text-gray-800 mb-1">Agendar Cita</h6>
               <p class="text-muted small mb-0">Reserva con tu médico.</p>
@@ -144,7 +162,7 @@
           </div>
 
           <div class="col-md-4 mb-3">
-            <div class="p-3 bg-light rounded border-bottom-success shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('laboratorio', 'nav-pac-laboratorio')">
+            <div class="p-3 bg-light rounded border-bottom-success shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('laboratorio', 'nav-pac-laboratorio', event)">
               <i class="fas fa-file-pdf fa-2x text-success mb-2"></i>
               <h6 class="font-weight-bold text-gray-800 mb-1">Ver Exámenes</h6>
               <p class="text-muted small mb-0">Descarga tus resultados.</p>
@@ -152,7 +170,7 @@
           </div>
 
           <div class="col-md-4 mb-3">
-            <div class="p-3 bg-light rounded border-bottom-warning shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('recordatorios', 'nav-pac-recordatorios')">
+            <div class="p-3 bg-light rounded border-bottom-warning shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('recordatorios', 'nav-pac-recordatorios', event)">
               <i class="fas fa-pills fa-2x text-warning mb-2"></i>
               <h6 class="font-weight-bold text-gray-800 mb-1">Tratamientos</h6>
               <p class="text-muted small mb-0">Revisa tus tomas activas.</p>
@@ -184,6 +202,7 @@
 
 </div>
 
+</section>
 
           <!-- VISTA: HISTORIAL DE CONSULTAS Y CITAS (Paciente) -->
 <section id="sec-pac-citas" class="content-section-paciente" style="display: none;">
@@ -229,38 +248,8 @@
               <th class="text-center"><i class="fas fa-cogs mr-1"></i> Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Fila de ejemplo 1: Cita Atendida (Historial) -->
-            <tr>
-              <td class="align-middle font-weight-bold text-gray-800">15/01/2026<br><small class="text-muted font-weight-normal">10:00 AM</small></td>
-              <td class="align-middle">Dr. Roberto Gómez</td>
-              <td class="align-middle">Medicina General</td>
-              <td class="align-middle">Consultorio 04<br><small class="text-muted">Sede Central</small></td>
-              <td class="align-middle">
-                <span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i> Atendido</span>
-              </td>
-              <td class="align-middle text-center">
-                <button class="btn btn-sm btn-outline-primary" title="Ver detalles o receta" onclick="verDetalleConsulta('Cita Dr. Gómez - 15/01/2026')">
-                  <i class="fas fa-eye"></i> Detalles
-                </button>
-              </td>
-            </tr>
-
-            <!-- Fila de ejemplo 2: Cita Próxima / Pendiente -->
-            <tr>
-              <td class="align-middle font-weight-bold text-gray-800">28/08/2026<br><small class="text-muted font-weight-normal">09:30 AM</small></td>
-              <td class="align-middle">Dra. Sofia Gutierrez</td>
-              <td class="align-middle">Ginecología</td>
-              <td class="align-middle">Consultorio 02<br><small class="text-muted">Clínica Norte</small></td>
-              <td class="align-middle">
-                <span class="badge badge-primary px-2 py-1"><i class="fas fa-clock mr-1"></i> Programada</span>
-              </td>
-              <td class="align-middle text-center">
-                <button class="btn btn-sm btn-outline-danger" title="Cancelar cita" onclick="cancelarCitaPendiente()">
-                  <i class="fas fa-times"></i> Cancelar
-                </button>
-              </td>
-            </tr>
+          <tbody id="tabla-citas-body">
+            <!-- Las filas se generan dinámicamente desde pacientes.js (localStorage) -->
           </tbody>
         </table>
       </div>
@@ -312,63 +301,8 @@
               <th class="text-center"><i class="fas fa-download mr-1"></i> Acción / Descarga</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Fila de ejemplo 1: Hemograma Completo -->
-            <tr>
-              <td class="align-middle font-weight-bold text-gray-800">
-                Hemograma Completo <br>
-                <small class="text-muted font-weight-normal">Biometría hemática y plaquetas</small>
-              </td>
-              <td class="align-middle">Sede Central (Managua)</td>
-              <td class="align-middle">20/08/2026</td>
-              <td class="align-middle">Dr. Roberto Gómez</td>
-              <td class="align-middle">
-                <span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i> Disponible</span>
-              </td>
-              <td class="align-middle text-center">
-                <button class="btn btn-sm btn-primary shadow-sm" onclick="descargarResultado('Hemograma Completo', 'PDF')">
-                  <i class="fas fa-file-pdf mr-1"></i> Descargar PDF
-                </button>
-              </td>
-            </tr>
-
-            <!-- Fila de ejemplo 2: Perfil Lipídico -->
-            <tr>
-              <td class="align-middle font-weight-bold text-gray-800">
-                Perfil Lipídico <br>
-                <small class="text-muted font-weight-normal">Colesterol y Triglicéridos</small>
-              </td>
-              <td class="align-middle">Clínica Norte</td>
-              <td class="align-middle">10/06/2026</td>
-              <td class="align-middle">Dra. Sofia Gutierrez</td>
-              <td class="align-middle">
-                <span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i> Disponible</span>
-              </td>
-              <td class="align-middle text-center">
-                <button class="btn btn-sm btn-primary shadow-sm" onclick="descargarResultado('Perfil Lipidico', 'PDF')">
-                  <i class="fas fa-file-pdf mr-1"></i> Descargar PDF
-                </button>
-              </td>
-            </tr>
-
-            <!-- Fila de ejemplo 3: Estudio en proceso (para mostrar dinamismo futuro del backend) -->
-            <tr>
-              <td class="align-middle font-weight-bold text-gray-800">
-                Urocultivo General <br>
-                <small class="text-muted font-weight-normal">Bacteriología</small>
-              </td>
-              <td class="align-middle">Sede Central (Managua)</td>
-              <td class="align-middle">25/08/2026</td>
-              <td class="align-middle">Dr. Roberto Gómez</td>
-              <td class="align-middle">
-                <span class="badge badge-warning px-2 py-1"><i class="fas fa-clock mr-1"></i> En Proceso</span>
-              </td>
-              <td class="align-middle text-center">
-                <button class="btn btn-sm btn-secondary shadow-sm" disabled title="El resultado aún no está listo">
-                  <i class="fas fa-spinner mr-1"></i> No disponible
-                </button>
-              </td>
-            </tr>
+          <tbody id="tabla-laboratorio-body">
+            <!-- Las filas se generan dinámicamente desde pacientes.js (localStorage) -->
           </tbody>
         </table>
       </div>
@@ -396,57 +330,8 @@
     </div>
   </div>
 
-  <div class="row">
-    <!-- Tarjeta Recordatorio 1 -->
-    <div class="col-xl-6 col-md-6 mb-4">
-      <div class="card border-left-danger shadow h-150 py-2">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Próxima Toma</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">Losartán 50mg</div>
-              <p class="text-muted small mt-2 mb-1"><i class="fas fa-clock mr-1"></i> Hoy a las 8:00 PM</p>
-              <span class="badge badge-danger">Frecuencia: Cada 12 horas</span>
-            </div>
-            <div class="col-auto">
-              <i class="fas fa-prescription-bottle-alt fa-2x text-gray-300"></i>
-            </div>
-          </div>
-          <hr class="my-2">
-          <div class="text-right">
-            <button class="btn btn-sm btn-outline-success" onclick="marcarTomado('Losartán 50mg')">
-              <i class="fas fa-check mr-1"></i> Marcar como Tomado
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta Recordatorio 2 -->
-    <div class="col-xl-6 col-md-6 mb-4">
-      <div class="card border-left-warning shadow h-150 py-2">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Próxima Toma</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">Paracetamol 500mg</div>
-              <p class="text-muted small mt-2 mb-1"><i class="fas fa-clock mr-1"></i> Mañana a las 8:00 AM</p>
-              <span class="badge badge-warning text-dark">Frecuencia: Cada 8 horas (Condicional)</span>
-            </div>
-            <div class="col-auto">
-              <i class="fas fa-pills fa-2x text-gray-300"></i>
-            </div>
-          </div>
-          <hr class="my-2">
-          <div class="text-right">
-            <button class="btn btn-sm btn-outline-success" onclick="marcarTomado('Paracetamol 500mg')">
-              <i class="fas fa-check mr-1"></i> Marcar como Tomado
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Las tarjetas se generan dinámicamente desde pacientes.js (localStorage) -->
+  <div class="row" id="recordatorios-medicamentos-container"></div>
 
   <!-- Fila 2: Subsección de Citas Médicas -->
   <div class="row mt-3">
@@ -455,26 +340,8 @@
     </div>
   </div>
 
-  <div class="row">
-    <!-- Tarjeta Alerta Cita -->
-    <div class="col-xl-6 col-md-6 mb-4">
-      <div class="card border-left-primary shadow h-100 py-2">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Cita Confirmada</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">Medicina General - Dr. Roberto Gómez</div>
-              <p class="text-muted small mt-2 mb-1"><i class="fas fa-calendar-alt mr-1"></i> Mañana a las 10:00 AM</p>
-              <span class="badge badge-primary">Consultorio 04 - Sede Central</span>
-            </div>
-            <div class="col-auto">
-              <i class="fas fa-user-md fa-2x text-gray-300"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Las tarjetas se generan dinámicamente desde pacientes.js (localStorage) -->
+  <div class="row" id="alertas-citas-container"></div>
 
 </section>
 
@@ -671,6 +538,150 @@
   </div>
 
 </section>
+
+<!-- VISTA: MI PERFIL (Paciente) -->
+<section id="sec-pac-perfil" class="content-section-paciente" style="display: none;">
+
+  <!-- Encabezado de la Sección -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Mi Perfil</h1>
+      <p class="text-muted small mb-0">Consulta y actualiza tu información personal y de acceso.</p>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- COLUMNA IZQUIERDA: RESUMEN DE LA CUENTA (solo lectura) -->
+    <div class="col-lg-4 mb-4">
+      <div class="card shadow border-0">
+        <div class="card-body text-center p-4">
+          <!-- Foto de perfil con opción de cambiarla -->
+          <div class="position-relative d-inline-block mb-3">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto overflow-hidden"
+                 style="width: 84px; height: 84px; font-size: 1.8rem; font-weight: 700;" id="perfil-avatar">
+              <span id="perfil-avatar-iniciales">PD</span>
+              <img src="" alt="" id="perfil-avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+            </div>
+            <label for="perfil-foto-input" class="btn btn-sm btn-primary rounded-circle position-absolute shadow-sm"
+                   style="bottom: 0; right: 0; width: 30px; height: 30px; padding: 0; line-height: 30px;" title="Cambiar foto">
+              <i class="fas fa-camera"></i>
+            </label>
+            <input type="file" id="perfil-foto-input" accept="image/png,image/jpeg" class="d-none">
+          </div>
+
+          <div class="mb-3">
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="perfil-quitar-foto">
+              <i class="fas fa-trash-alt mr-1"></i> Quitar foto
+            </button>
+          </div>
+
+          <h6 class="font-weight-bold text-gray-800 mb-0" id="perfil-nombre-completo">Paciente Demo</h6>
+          <p class="text-muted small mb-3" id="perfil-usuario-actual">@paciente.demo</p>
+
+          <hr>
+
+          <div class="text-left small">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-gray-600">Rol</span>
+              <span class="font-weight-bold text-gray-800">Paciente</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-gray-600">Miembro desde</span>
+              <span class="font-weight-bold text-gray-800" id="perfil-fecha-registro">15/01/2026</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-gray-600">Estado de cuenta</span>
+              <span class="badge badge-success">Activa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: FORMULARIOS DE EDICIÓN -->
+    <div class="col-lg-8 mb-4">
+
+      <!-- Tarjeta 1: Datos personales -->
+      <div class="card shadow border-0 mb-4">
+        <div class="card-header py-3 bg-white">
+          <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-id-card mr-2"></i>Datos Personales</h6>
+        </div>
+        <div class="card-body p-4">
+          <form id="form-editar-perfil" novalidate>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="perfil-nombres" class="font-weight-bold small text-gray-700">Nombres *</label>
+                <input type="text" class="form-control" id="perfil-nombres" name="nombres" placeholder="Ej. María" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="perfil-apellidos" class="font-weight-bold small text-gray-700">Apellidos *</label>
+                <input type="text" class="form-control" id="perfil-apellidos" name="apellidos" placeholder="Ej. Gómez" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="perfil-correo" class="font-weight-bold small text-gray-700">Correo Electrónico *</label>
+                <input type="email" class="form-control" id="perfil-correo" name="correo" placeholder="tu@correo.com" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="perfil-telefono" class="font-weight-bold small text-gray-700">Teléfono *</label>
+                <input type="tel" class="form-control" id="perfil-telefono" name="telefono" placeholder="8888-8888" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="perfil-usuario" class="font-weight-bold small text-gray-700">Usuario *</label>
+              <input type="text" class="form-control" id="perfil-usuario" name="usuario" placeholder="Ej. maria.gomez" required minlength="4">
+              <small class="form-text text-muted">Con este usuario inicias sesión (sin espacios).</small>
+            </div>
+
+            <div class="d-flex justify-content-end pt-2">
+              <button type="submit" class="btn btn-primary px-4 font-weight-bold shadow-sm">
+                <i class="fas fa-save mr-2"></i> Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Cambiar contraseña -->
+      <div class="card shadow border-0">
+        <div class="card-header py-3 bg-white">
+          <h6 class="m-0 font-weight-bold text-danger"><i class="fas fa-lock mr-2"></i>Cambiar Contraseña</h6>
+        </div>
+        <div class="card-body p-4">
+          <form id="form-cambiar-password" novalidate>
+            <div class="form-group">
+              <label for="perfil-password-actual" class="font-weight-bold small text-gray-700">Contraseña Actual *</label>
+              <input type="password" class="form-control" id="perfil-password-actual" name="password_actual" placeholder="••••••••" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="perfil-password-nueva" class="font-weight-bold small text-gray-700">Nueva Contraseña *</label>
+                <input type="password" class="form-control" id="perfil-password-nueva" name="password_nueva" placeholder="••••••••" required minlength="6">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="perfil-password-confirmar" class="font-weight-bold small text-gray-700">Confirmar Nueva Contraseña *</label>
+                <input type="password" class="form-control" id="perfil-password-confirmar" name="password_confirmar" placeholder="••••••••" required>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end pt-2">
+              <button type="submit" class="btn btn-danger px-4 font-weight-bold shadow-sm">
+                <i class="fas fa-key mr-2"></i> Actualizar Contraseña
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- MODAL: DETALLE DE CONSULTA MÉDICA -->
 <div class="modal fade" id="modalDetalleConsulta" tabindex="-1" role="dialog" aria-labelledby="modalDetalleLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
