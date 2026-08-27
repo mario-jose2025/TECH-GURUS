@@ -24,7 +24,7 @@
     <!-- ================= MENÚ LATERAL (SIDEBAR) ================= -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-      <!-- Logo personalizable con imagen y fallback idéntico al admin -->
+      <!-- Logo personalizable con imagen y fallback -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
         <div class="sidebar-brand-icon">
           <img src="../assets/logo/logo.png" alt="Vitalis Tech Logo" style="max-height: 38px; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
@@ -54,11 +54,11 @@
         </a>
       </li>
 
-      <!-- Nav Item - Consultas Médicas -->
+      <!-- Nav Item - Consultas Médicas / Historial -->
       <li class="nav-item" id="nav-pac-citas">
         <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('citas', 'nav-pac-citas')">
           <i class="fas fa-fw fa-notes-medical"></i>
-          <span>Consultas Médicas</span>
+          <span>Historial de Consultas</span>
         </a>
       </li>
 
@@ -66,7 +66,15 @@
       <li class="nav-item" id="nav-pac-laboratorio">
         <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('laboratorio', 'nav-pac-laboratorio')">
           <i class="fas fa-fw fa-file-medical-alt"></i>
-          <span>Resultados de Laboratorio</span>
+          <span>Resultados de Exámenes</span>
+        </a>
+      </li>
+
+      <!-- Nav Item - Recordatorios Automáticos (Agregado para cumplir la lista completa) -->
+      <li class="nav-item" id="nav-pac-recordatorios">
+        <a class="nav-link" href="#" onclick="mostrarSeccionPaciente('recordatorios', 'nav-pac-recordatorios')">
+          <i class="fas fa-fw fa-bell"></i>
+          <span>Recordatorios</span>
         </a>
       </li>
 
@@ -89,7 +97,7 @@
       <!-- Main Content -->
       <div id="content">
 
-        <!-- Topbar idéntica -->
+        <!-- Topbar -->
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
           <span class="navbar-text font-weight-bold text-gray-800 ml-3">
             Vitalis Tech - Panel del Paciente
@@ -115,141 +123,623 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
-          <!-- VISTA 1: DASHBOARD GENERAL -->
-          <section id="sec-pac-inicio" class="content-section-paciente">
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Vista General</h1>
+         <!-- SECCIÓN INFERIOR DEL DASHBOARD GENERAL -->
+<div class="row mt-4">
+  
+  <!-- Columna Izquierda: Atajos Rápidos de Acceso -->
+  <div class="col-lg-8 mb-4">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3 bg-white">
+        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bolt mr-2"></i> Acciones Rápidas</h6>
+      </div>
+      <div class="card-body">
+        <div class="row text-center">
+          
+          <div class="col-md-4 mb-3">
+            <div class="p-3 bg-light rounded border-bottom-primary shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('agendar', 'nav-pac-agendar')">
+              <i class="fas fa-calendar-plus fa-2x text-primary mb-2"></i>
+              <h6 class="font-weight-bold text-gray-800 mb-1">Agendar Cita</h6>
+              <p class="text-muted small mb-0">Reserva con tu médico.</p>
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <div class="p-3 bg-light rounded border-bottom-success shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('laboratorio', 'nav-pac-laboratorio')">
+              <i class="fas fa-file-pdf fa-2x text-success mb-2"></i>
+              <h6 class="font-weight-bold text-gray-800 mb-1">Ver Exámenes</h6>
+              <p class="text-muted small mb-0">Descarga tus resultados.</p>
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <div class="p-3 bg-light rounded border-bottom-warning shadow-sm cursor-pointer" onclick="mostrarSeccionPaciente('recordatorios', 'nav-pac-recordatorios')">
+              <i class="fas fa-pills fa-2x text-warning mb-2"></i>
+              <h6 class="font-weight-bold text-gray-800 mb-1">Tratamientos</h6>
+              <p class="text-muted small mb-0">Revisa tus tomas activas.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Columna Derecha: Tips de Salud / Widget Informativo -->
+  <div class="col-lg-4 mb-4">
+    <div class="card shadow mb-4 border-left-info">
+      <div class="card-header py-3 bg-white">
+        <h6 class="m-0 font-weight-bold text-info"><i class="fas fa-heartbeat mr-2"></i> Consejo de Salud Vitalis</h6>
+      </div>
+      <div class="card-body">
+        <div class="text-center">
+          <i class="fas fa-shield-alt fa-3x text-info mb-3"></i>
+        </div>
+        <p class="text-gray-800 font-weight-bold text-center">Mantén tu presión arterial controlada</p>
+        <p class="text-muted small text-center mb-0">
+          Recuerda realizar una caminata diaria de 30 minutos y reducir el consumo de sodio según las indicaciones de tu médico tratante.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+          <!-- VISTA: HISTORIAL DE CONSULTAS Y CITAS (Paciente) -->
+<section id="sec-pac-citas" class="content-section-paciente" style="display: none;">
+  
+  <!-- Encabezado de la Sección -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Historial de Consultas Médicas</h1>
+      <p class="text-muted small mb-0">Consulta el registro detallado de tus citas pasadas, atenciones y próximas visitas.</p>
+    </div>
+    <!-- Botón de acción rápida opcional (ej: agendar desde el historial) -->
+    <button class="btn btn-primary btn-sm shadow-sm" onclick="mostrarSeccionPaciente('agendar', 'nav-pac-agendar')">
+      <i class="fas fa-calendar-plus mr-1"></i> Agendar Nueva Cita
+    </button>
+  </div>
+
+  <!-- Tarjeta Contenedora de la Tabla -->
+  <div class="card shadow mb-4">
+    
+    <div class="card-header py-3 bg-white d-flex flex-row align-items-center justify-content-between">
+      <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-notes-medical mr-2"></i> Bitácora de Atenciones Médicas</h6>
+      
+      <!-- Opcional: Pequeño filtro de estado para futura interacción -->
+      <div class="dropdown no-arrow">
+        <select class="form-control form-control-sm border-0 bg-light font-weight-bold text-secondary" id="filtro-estado-citas">
+          <option value="todos">Mostrar: Todos los registros</option>
+          <option value="atendido">Atendidos</option>
+          <option value="pendiente">Próximos / Pendientes</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="dataTableConsultas" width="100%" cellspacing="0">
+          <thead class="thead-light">
+            <tr>
+              <th><i class="fas fa-calendar-alt mr-1"></i> Fecha y Hora</th>
+              <th><i class="fas fa-user-md mr-1"></i> Médico Tratante</th>
+              <th><i class="fas fa-stethoscope mr-1"></i> Especialidad</th>
+              <th><i class="fas fa-hospital mr-1"></i> Consultorio / Sede</th>
+              <th><i class="fas fa-clipboard-check mr-1"></i> Estado</th>
+              <th class="text-center"><i class="fas fa-cogs mr-1"></i> Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Fila de ejemplo 1: Cita Atendida (Historial) -->
+            <tr>
+              <td class="align-middle font-weight-bold text-gray-800">15/01/2026<br><small class="text-muted font-weight-normal">10:00 AM</small></td>
+              <td class="align-middle">Dr. Roberto Gómez</td>
+              <td class="align-middle">Medicina General</td>
+              <td class="align-middle">Consultorio 04<br><small class="text-muted">Sede Central</small></td>
+              <td class="align-middle">
+                <span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i> Atendido</span>
+              </td>
+              <td class="align-middle text-center">
+                <button class="btn btn-sm btn-outline-primary" title="Ver detalles o receta" onclick="verDetalleConsulta('Cita Dr. Gómez - 15/01/2026')">
+                  <i class="fas fa-eye"></i> Detalles
+                </button>
+              </td>
+            </tr>
+
+            <!-- Fila de ejemplo 2: Cita Próxima / Pendiente -->
+            <tr>
+              <td class="align-middle font-weight-bold text-gray-800">28/08/2026<br><small class="text-muted font-weight-normal">09:30 AM</small></td>
+              <td class="align-middle">Dra. Sofia Gutierrez</td>
+              <td class="align-middle">Ginecología</td>
+              <td class="align-middle">Consultorio 02<br><small class="text-muted">Clínica Norte</small></td>
+              <td class="align-middle">
+                <span class="badge badge-primary px-2 py-1"><i class="fas fa-clock mr-1"></i> Programada</span>
+              </td>
+              <td class="align-middle text-center">
+                <button class="btn btn-sm btn-outline-danger" title="Cancelar cita" onclick="cancelarCitaPendiente()">
+                  <i class="fas fa-times"></i> Cancelar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+        <!-- VISTA: RESULTADOS DE LABORATORIO Y EXÁMENES (Paciente) -->
+<section id="sec-pac-laboratorio" class="content-section-paciente" style="display: none;">
+  
+  <!-- Encabezado de la Sección -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Resultados de Exámenes y Laboratorio</h1>
+      <p class="text-muted small mb-0">Descarga y consulta el historial de tus análisis clínicos ordenados por fecha.</p>
+    </div>
+    <span class="badge badge-success p-2 font-weight-normal"><i class="fas fa-file-medical-alt mr-1"></i> Expediente Digital Verificado</span>
+  </div>
+
+  <!-- Tarjeta Contenedora de la Tabla -->
+  <div class="card shadow mb-4">
+    
+    <div class="card-header py-3 bg-white d-flex flex-row align-items-center justify-content-between">
+      <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-flask mr-2"></i> Listado de Estudios Disponibles</h6>
+      
+      <!-- Buscador rápido de exámenes -->
+      <div class="input-group input-group-sm" style="width: 250px;">
+        <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar examen..." id="input-buscar-examen">
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button">
+            <i class="fas fa-search fa-sm"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="dataTableLaboratorio" width="100%" cellspacing="0">
+          <thead class="thead-light">
+            <tr>
+              <th><i class="fas fa-file-alt mr-1"></i> Nombre del Examen / Estudio</th>
+              <th><i class="fas fa-hospital mr-1"></i> Sede / Laboratorio</th>
+              <th><i class="fas fa-calendar-alt mr-1"></i> Fecha de Emisión</th>
+              <th><i class="fas fa-user-md mr-1"></i> Médico Solicitante</th>
+              <th><i class="fas fa-info-circle mr-1"></i> Estado</th>
+              <th class="text-center"><i class="fas fa-download mr-1"></i> Acción / Descarga</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Fila de ejemplo 1: Hemograma Completo -->
+            <tr>
+              <td class="align-middle font-weight-bold text-gray-800">
+                Hemograma Completo <br>
+                <small class="text-muted font-weight-normal">Biometría hemática y plaquetas</small>
+              </td>
+              <td class="align-middle">Sede Central (Managua)</td>
+              <td class="align-middle">20/08/2026</td>
+              <td class="align-middle">Dr. Roberto Gómez</td>
+              <td class="align-middle">
+                <span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i> Disponible</span>
+              </td>
+              <td class="align-middle text-center">
+                <button class="btn btn-sm btn-primary shadow-sm" onclick="descargarResultado('Hemograma Completo', 'PDF')">
+                  <i class="fas fa-file-pdf mr-1"></i> Descargar PDF
+                </button>
+              </td>
+            </tr>
+
+            <!-- Fila de ejemplo 2: Perfil Lipídico -->
+            <tr>
+              <td class="align-middle font-weight-bold text-gray-800">
+                Perfil Lipídico <br>
+                <small class="text-muted font-weight-normal">Colesterol y Triglicéridos</small>
+              </td>
+              <td class="align-middle">Clínica Norte</td>
+              <td class="align-middle">10/06/2026</td>
+              <td class="align-middle">Dra. Sofia Gutierrez</td>
+              <td class="align-middle">
+                <span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i> Disponible</span>
+              </td>
+              <td class="align-middle text-center">
+                <button class="btn btn-sm btn-primary shadow-sm" onclick="descargarResultado('Perfil Lipidico', 'PDF')">
+                  <i class="fas fa-file-pdf mr-1"></i> Descargar PDF
+                </button>
+              </td>
+            </tr>
+
+            <!-- Fila de ejemplo 3: Estudio en proceso (para mostrar dinamismo futuro del backend) -->
+            <tr>
+              <td class="align-middle font-weight-bold text-gray-800">
+                Urocultivo General <br>
+                <small class="text-muted font-weight-normal">Bacteriología</small>
+              </td>
+              <td class="align-middle">Sede Central (Managua)</td>
+              <td class="align-middle">25/08/2026</td>
+              <td class="align-middle">Dr. Roberto Gómez</td>
+              <td class="align-middle">
+                <span class="badge badge-warning px-2 py-1"><i class="fas fa-clock mr-1"></i> En Proceso</span>
+              </td>
+              <td class="align-middle text-center">
+                <button class="btn btn-sm btn-secondary shadow-sm" disabled title="El resultado aún no está listo">
+                  <i class="fas fa-spinner mr-1"></i> No disponible
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+<!-- VISTA: RECORDATORIOS AUTOMÁTICOS (Paciente) -->
+<section id="sec-pac-recordatorios" class="content-section-paciente" style="display: none;">
+  
+  <!-- Encabezado de la Sección -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Recordatorios y Alertas</h1>
+      <p class="text-muted small mb-0">Gestiona tus alarmas programadas para tomas de medicamentos y próximas visitas médicas.</p>
+    </div>
+    <span class="badge badge-warning p-2 font-weight-normal text-dark"><i class="fas fa-bell mr-1"></i> Sistema de Alertas Activo</span>
+  </div>
+
+  <!-- Fila 1: Subsección de Medicamentos -->
+  <div class="row">
+    <div class="col-12">
+      <h5 class="font-weight-bold text-gray-800 mb-3"><i class="fas fa-pills mr-2 text-danger"></i> Tratamientos y Medicamentos Activos</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Tarjeta Recordatorio 1 -->
+    <div class="col-xl-6 col-md-6 mb-4">
+      <div class="card border-left-danger shadow h-150 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Próxima Toma</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">Losartán 50mg</div>
+              <p class="text-muted small mt-2 mb-1"><i class="fas fa-clock mr-1"></i> Hoy a las 8:00 PM</p>
+              <span class="badge badge-danger">Frecuencia: Cada 12 horas</span>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-prescription-bottle-alt fa-2x text-gray-300"></i>
+            </div>
+          </div>
+          <hr class="my-2">
+          <div class="text-right">
+            <button class="btn btn-sm btn-outline-success" onclick="marcarTomado('Losartán 50mg')">
+              <i class="fas fa-check mr-1"></i> Marcar como Tomado
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjeta Recordatorio 2 -->
+    <div class="col-xl-6 col-md-6 mb-4">
+      <div class="card border-left-warning shadow h-150 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Próxima Toma</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">Paracetamol 500mg</div>
+              <p class="text-muted small mt-2 mb-1"><i class="fas fa-clock mr-1"></i> Mañana a las 8:00 AM</p>
+              <span class="badge badge-warning text-dark">Frecuencia: Cada 8 horas (Condicional)</span>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-pills fa-2x text-gray-300"></i>
+            </div>
+          </div>
+          <hr class="my-2">
+          <div class="text-right">
+            <button class="btn btn-sm btn-outline-success" onclick="marcarTomado('Paracetamol 500mg')">
+              <i class="fas fa-check mr-1"></i> Marcar como Tomado
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila 2: Subsección de Citas Médicas -->
+  <div class="row mt-3">
+    <div class="col-12">
+      <h5 class="font-weight-bold text-gray-800 mb-3"><i class="fas fa-calendar-check mr-2 text-primary"></i> Alertas de Citas Próximas</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Tarjeta Alerta Cita -->
+    <div class="col-xl-6 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Cita Confirmada</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">Medicina General - Dr. Roberto Gómez</div>
+              <p class="text-muted small mt-2 mb-1"><i class="fas fa-calendar-alt mr-1"></i> Mañana a las 10:00 AM</p>
+              <span class="badge badge-primary">Consultorio 04 - Sede Central</span>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-user-md fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+        
+<!-- VISTA: AGENDAR CITA EN LÍNEA (Paciente) -->
+<section id="sec-pac-agendar" class="content-section-paciente" style="display: none;">
+  
+  <!-- Encabezado -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Agendar Cita en Línea</h1>
+      <p class="text-muted small mb-0">Selecciona el centro de salud, especialidad y el médico con disponibilidad real.</p>
+    </div>
+    <span class="badge badge-primary p-2 font-weight-normal"><i class="fas fa-laptop-medical mr-1"></i> Portal Paciente Vitalis Tech</span>
+  </div>
+
+  <!-- Tarjeta Contenedora -->
+  <div class="row justify-content-center">
+    <div class="col-xl-10 col-lg-12">
+      
+      <!-- TARJETA INFORMATIVA: Paciente en Sesión -->
+      <div class="card bg-light border-left-info shadow mb-4">
+        <div class="card-body py-3">
+          <div class="row align-items-center">
+            <div class="col-auto">
+              <i class="fas fa-user-circle fa-2x text-info"></i>
+            </div>
+            <div class="col">
+              <span class="text-xs font-weight-bold text-info text-uppercase">Paciente Titular de la Reserva</span>
+              <div class="text-gray-800 font-weight-bold">Paciente Demo (Expediente #VT-2026-849)</div>
+            </div>
+            <div class="col-auto text-muted small">
+              <i class="fas fa-info-circle mr-1"></i> La cita se registrará automáticamente en su historial.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORMULARIO PRINCIPAL -->
+      <div class="card shadow mb-4 border-bottom-primary">
+        
+        <div class="card-header py-3 bg-white">
+          <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-calendar-check mr-2"></i> Selección de Turno y Disponibilidad</h6>
+        </div>
+
+        <div class="card-body p-4">
+          <form id="form-agendar-cita-linea" novalidate>
+            
+            <!-- Fila 1: Centro de Salud & Especialidad -->
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="select-centro" class="font-weight-bold text-gray-700">Centro de Salud / Sede <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light"><i class="fas fa-hospital text-primary"></i></span>
+                  </div>
+                  <select class="form-control" id="select-centro" name="centro_salud_id" required>
+                    <option value="">-- Seleccione sede o clínica --</option>
+                    <option value="sede-central">Vitalis Tech - Sede Central (Managua)</option>
+                    <option value="sede-norte">Vitalis Tech - Clínica Norte</option>
+                  </select>
+                </div>
+                <small class="form-text text-muted">Ubicación física donde se atenderá la cita.</small>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="select-especialidad" class="font-weight-bold text-gray-700">Especialidad Médica <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light"><i class="fas fa-stethoscope text-primary"></i></span>
+                  </div>
+                  <select class="form-control" id="select-especialidad" name="especialidad_id" required>
+                    <option value="">-- Seleccione especialidad --</option>
+                    <option value="medicina-general">Medicina General</option>
+                    <option value="pediatria">Pediatría</option>
+                    <option value="ginecologia">Ginecología</option>
+                    <option value="odontologia">Odontología</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <!-- Tarjetas KPI -->
-            <div class="row">
-              <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Próxima Cita</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">Mañana</div>
-                    <div class="text-xs text-gray-500 mt-1">10:00 AM - Dr. Gómez</div>
+            <!-- Fila 2: Médico Disponible & Fecha Disponible -->
+            <div class="form-row mt-3">
+              <div class="form-group col-md-6">
+                <label for="select-medico" class="font-weight-bold text-gray-700">Médico Disponible <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light"><i class="fas fa-user-md text-primary"></i></span>
                   </div>
+                  <select class="form-control" id="select-medico" name="medico_id" required disabled>
+                    <option value="">-- Seleccione centro y especialidad primero --</option>
+                  </select>
+                </div>
+                <small class="form-text text-muted">Se muestran doctores activos en turno.</small>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="input-fecha-cita" class="font-weight-bold text-gray-700">Fecha Disponible <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light"><i class="fas fa-calendar-alt text-primary"></i></span>
+                  </div>
+                  <input type="date" class="form-control" id="input-fecha-cita" name="fecha_cita" required>
+                </div>
+                <small class="form-text text-muted">Días habilitados en la agenda del médico.</small>
+              </div>
+            </div>
+
+            <!-- Fila 3: Horario y Teléfono de Notificación -->
+            <div class="form-row mt-3">
+              <div class="form-group col-md-6">
+                <label for="select-horario" class="font-weight-bold text-gray-700">Hora de la Cita <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light"><i class="fas fa-clock text-primary"></i></span>
+                  </div>
+                  <select class="form-control" id="select-horario" name="horario_slot" required>
+                    <option value="">-- Seleccione fecha primero --</option>
+                    <option value="08:00">08:00 AM - 08:30 AM (Disponible)</option>
+                    <option value="08:30">08:30 AM - 09:00 AM (Disponible)</option>
+                    <option value="09:00">09:00 AM - 09:30 AM (Ocupado)</option>
+                  </select>
                 </div>
               </div>
 
-              <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Tratamiento Activo</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">Losartán</div>
-                    <span class="badge badge-alta mt-2">Cada 12 hrs</span>
+              <div class="form-group col-md-6">
+                <label for="input-telefono" class="font-weight-bold text-gray-700">Teléfono / WhatsApp para Recordatorio <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light"><i class="fas fa-phone-alt text-primary"></i></span>
                   </div>
+                  <input type="tel" class="form-control" id="input-telefono" name="telefono_contacto" placeholder="+505 8888-8888" required>
+                </div>
+                <small class="form-text text-muted">Recibirá una alerta previa de su cita.</small>
+              </div>
+            </div>
+
+            <!-- Fila 4: Tipo de Consulta & Motivo -->
+            <div class="form-row mt-3">
+              <div class="form-group col-md-6">
+                <label for="select-tipo-atencion" class="font-weight-bold text-gray-700">Tipo de Consulta <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light"><i class="fas fa-tag text-primary"></i></span>
+                  </div>
+                  <select class="form-control" id="select-tipo-atencion" name="tipo_atencion" required>
+                    <option value="primera-vez">Primera vez / Evaluación</option>
+                    <option value="seguimiento">Seguimiento / Control</option>
+                    <option value="resultados">Lectura de Resultados</option>
+                  </select>
                 </div>
               </div>
 
-              <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-warning shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Citas Agendadas</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">1 Activa</div>
-                    <span class="badge badge-media mt-2">Medicina General</span>
+              <div class="form-group col-md-6">
+                <label for="select-prioridad" class="font-weight-bold text-gray-700">Nivel de Urgencia</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light"><i class="fas fa-exclamation-circle text-primary"></i></span>
                   </div>
-                </div>
-              </div>
-
-              <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Laboratorios Listos</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">2 Archivos</div>
-                    <span class="badge badge-normal mt-2">Descargables</span>
-                  </div>
+                  <select class="form-control" id="select-prioridad" name="prioridad">
+                    <option value="normal">Normal / Rutina</option>
+                    <option value="moderada">Moderada</option>
+                  </select>
                 </div>
               </div>
             </div>
-          </section>
 
-          <!-- VISTA 2: AGENDAR CITA -->
-          <section id="sec-pac-agendar" class="content-section-paciente" style="display: none;">
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Agendar Cita</h1>
-            </div>
-            <div class="card shadow mb-4">
-              <div class="card-body">
-                <form id="form-agendar-cita-paciente">
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label>Especialidad</label>
-                      <select class="form-control" id="select-especialidad" required>
-                        <option value="">-- Seleccionar --</option>
-                        <option value="Medicina General">Medicina General</option>
-                        <option value="Pediatría">Pediatría</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label>Médico</label>
-                      <select class="form-control" id="select-medico" required>
-                        <option value="">-- Selecciona Especialidad --</option>
-                      </select>
-                    </div>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Confirmar Cita</button>
-                </form>
+            <div class="form-row mt-3">
+              <div class="form-group col-12">
+                <label for="textarea-motivo" class="font-weight-bold text-gray-700">Motivo de la Consulta o Síntomas <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="textarea-motivo" name="motivo_consulta" rows="3" placeholder="Describa brevemente el motivo por el cual solicita la cita en línea..." required></textarea>
               </div>
             </div>
-          </section>
 
-          <!-- VISTA 3: CONSULTAS MÉDICAS -->
-          <section id="sec-pac-citas" class="content-section-paciente" style="display: none;">
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Historial de Consultas</h1>
-            </div>
-            <div class="card shadow mb-4">
-              <div class="card-body">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Fecha</th>
-                      <th>Médico</th>
-                      <th>Especialidad</th>
-                      <th>Estado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>15/01/2026</td>
-                      <td>Dr. Roberto Gómez</td>
-                      <td>Medicina General</td>
-                      <td><span class="badge badge-normal">Atendido</span></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
+            <hr class="my-4">
 
-          <!-- VISTA 4: LABORATORIOS -->
-          <section id="sec-pac-laboratorio" class="content-section-paciente" style="display: none;">
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-              <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Resultados de Laboratorio</h1>
+            <!-- Botones de Acción -->
+            <div class="d-flex justify-content-end align-items-center">
+              <button type="reset" class="btn btn-secondary mr-2">
+                <i class="fas fa-redo mr-1"></i> Restablecer
+              </button>
+              <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                <i class="fas fa-check-circle mr-1"></i> Confirmar Cita en Línea
+              </button>
             </div>
-            <div class="card shadow mb-4">
-              <div class="card-body">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Examen</th>
-                      <th>Fecha</th>
-                      <th>Acción</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Hemograma Completo</td>
-                      <td>20/08/2026</td>
-                      <td><button class="btn btn-sm btn-primary" onclick="descargarResultado('Hemograma')">Descargar PDF</button></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+<!-- MODAL: DETALLE DE CONSULTA MÉDICA -->
+<div class="modal fade" id="modalDetalleConsulta" tabindex="-1" role="dialog" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title font-weight-bold" id="modalDetalleLabel">
+          <i class="fas fa-file-medical-alt mr-2"></i> Detalle de la Consulta Médica
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Ficha técnica rápida -->
+        <div class="row mb-3">
+          <div class="col-sm-6">
+            <span class="text-xs font-weight-bold text-primary text-uppercase">Fecha y Hora</span>
+            <p class="text-gray-800 font-weight-bold mb-1" id="det-fecha">15/01/2026 - 10:00 AM</p>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-xs font-weight-bold text-primary text-uppercase">Médico Tratante</span>
+            <p class="text-gray-800 font-weight-bold mb-1" id="det-medico">Dr. Roberto Gómez (Medicina General)</p>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Diagnóstico -->
+        <div class="form-group">
+          <label class="font-weight-bold text-gray-700">Diagnóstico Clínico:</label>
+          <div class="p-3 bg-light rounded text-gray-800" id="det-diagnostico">
+            Hipertensión arterial estadio 1 / Cuadro leve de estrés laboral.
+          </div>
+        </div>
+
+        <!-- Receta / Tratamiento -->
+        <div class="form-group">
+          <label class="font-weight-bold text-gray-700">Tratamiento Recetado:</label>
+          <ul class="list-group" id="det-receta">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Losartán 50mg
+              <span class="badge badge-danger badge-pill">Tomar cada 12 horas por 30 días</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="form-group">
+          <label class="font-weight-bold text-gray-700">Indicaciones y Recomendaciones:</label>
+          <p class="text-muted small mb-0" id="det-observaciones">
+            Reducir el consumo de sal, realizar caminatas de 30 minutos diarios y control de presión arterial semanal.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="descargarRecetaPDF()">
+          <i class="fas fa-download mr-1"></i> Descargar Receta en PDF
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
 
         </div>
         <!-- /.container-fluid -->
@@ -276,6 +766,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
-  <script src="../js/pages/paciente.js"></script>
+  <script src="../js/pages/pacientes.js"></script>
 </body>
 </html>
