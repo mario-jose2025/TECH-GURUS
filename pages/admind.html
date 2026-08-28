@@ -16,6 +16,7 @@
 
   <!-- Tu CSS Personalizado -->
   <link rel="stylesheet" href="../css/pages/admindstyles.css">
+  <link rel="stylesheet" href="../css/components/chatbot.css">
 </head>
 
 <body id="page-top">
@@ -535,6 +536,11 @@
               <span class="badge badge-info p-2"><i class="fas fa-stethoscope mr-1"></i> Atención Ambualtoria / Ficha Clínica</span>
             </div>
 
+            <div class="alert alert-info d-none" id="alerta-consulta-vinculada" role="alert">
+              <i class="fas fa-link mr-2"></i>
+              <span id="texto-consulta-vinculada"></span>
+            </div>
+
             <div class="card shadow mb-4 border-0">
               <div class="card-header py-3 bg-info text-white d-flex align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold"><i class="fas fa-notes-medical mr-2"></i>Registro de Diagnóstico y Prescripción</h6>
@@ -547,6 +553,7 @@
                   <!-- BLOQUE 1: BÚSQUEDA DE PACIENTE Y ESPECIALIDAD -->
                   <div class="bg-light p-3 rounded mb-4 border-left-info">
                     <h6 class="font-weight-bold text-info mb-3"><i class="fas fa-user-check mr-2"></i>1. Paciente y Área de Atención</h6>
+                    <input type="hidden" id="con-cita-id" value="">
                     <div class="form-row">
                       <div class="form-group col-md-6">
                         <label class="font-weight-bold small text-gray-700">Paciente Atendido *</label>
@@ -1174,6 +1181,24 @@
 
    <!-- Scripts CDN -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- ==================== CHATBOT DE AYUDA ==================== -->
+  <button id="chatbotToggle" class="chatbot-fab" title="Asistente Vitalis">
+    <i class="fas fa-comment-medical"></i>
+  </button>
+
+  <div id="chatbotWindow" class="chatbot-window d-none">
+    <div class="chatbot-header">
+      <span><i class="fas fa-robot mr-2"></i>Asistente Vitalis</span>
+      <button id="chatbotClose" class="chatbot-close" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="chatbot-body" id="chatbotBody"></div>
+    <div class="chatbot-quick-replies" id="chatbotQuickReplies"></div>
+    <form class="chatbot-input-row" id="chatbotForm">
+      <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." autocomplete="off" />
+      <button type="submit" aria-label="Enviar"><i class="fas fa-paper-plane"></i></button>
+    </form>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
 

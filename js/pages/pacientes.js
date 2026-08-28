@@ -241,7 +241,7 @@ function badgeEstadoCita(estado) {
 function accionesCita(cita) {
   if (cita.estado === "Atendida") {
     return `
-      <button class="btn btn-sm btn-outline-primary" title="Ver detalles o receta" onclick="verDetalleConsulta('Cita ${cita.medico} - ${formatearFecha(cita.fecha)}')">
+      <button class="btn btn-sm btn-outline-primary" title="Ver detalles o receta" onclick="verDetalleConsulta(${cita.id})">
         <i class="fas fa-eye"></i> Detalles
       </button>`;
   }
@@ -762,10 +762,59 @@ window.cerrarSesion = function () {
   window.location.href = "../index.html";
 };
 
-window.verDetalleConsulta = function(infoCita) {
-    // Aquí más adelante harás un fetch al backend para traer los datos reales por ID de consulta
-    // Por ahora, disparamos el modal de Bootstrap de forma limpia:
-    $('#modalDetalleConsulta').modal('show');
+// Misma clave que usa admindscrip.js ("vitalis_consultas") — cuando el
+// admin registra el diagnóstico de una cita, aparece aquí.
+const CONSULTAS_STORAGE_KEY = "vitalis_consultas";
+
+function obtenerConsultas() {
+  const raw = localStorage.getItem(CONSULTAS_STORAGE_KEY);
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn("No se pudo leer las consultas guardadas.", e);
+    return [];
+  }
+}
+
+window.verDetalleConsulta = function (citaId) {
+  const cita = obtenerCitas().find((c) => c.id === citaId);
+  const consulta = obtenerConsultas().find((c) => c.citaId === citaId);
+
+  const elFecha = document.getElementById("det-fecha");
+  const elMedico = document.getElementById("det-medico");
+  const elDiagnostico = document.getElementById("det-diagnostico");
+  const elReceta = document.getElementById("det-receta");
+  const elObservaciones = document.getElementById("det-observaciones");
+
+  if (cita && elFecha) {
+    elFecha.textContent = `${formatearFecha(cita.fecha)} - ${cita.hora}`;
+  }
+  if (cita && elMedico) {
+    elMedico.textContent = `${cita.medico} (${cita.especialidad})`;
+  }
+
+  if (consulta) {
+    // Hay un diagnóstico real registrado por el personal de salud
+    if (elDiagnostico) elDiagnostico.textContent = consulta.diagnostico || "Sin diagnóstico registrado.";
+
+    if (elReceta) {
+      elReceta.innerHTML = consulta.receta
+        ? `<li class="list-group-item">${consulta.receta.replace(/\n/g, "<br>")}</li>`
+        : '<li class="list-group-item text-muted">No se recetó ningún medicamento en esta consulta.</li>';
+    }
+
+    if (elObservaciones) {
+      elObservaciones.textContent = consulta.indicaciones || "Sin indicaciones adicionales.";
+    }
+  } else {
+    // No hay consulta vinculada todavía (dato de ejemplo o pendiente de registrar)
+    if (elDiagnostico) elDiagnostico.textContent = "El personal de salud todavía no ha registrado el diagnóstico de esta consulta.";
+    if (elReceta) elReceta.innerHTML = '<li class="list-group-item text-muted">Sin receta registrada.</li>';
+    if (elObservaciones) elObservaciones.textContent = "—";
+  }
+
+  $('#modalDetalleConsulta').modal('show');
 };
 
 window.descargarRecetaPDF = function() {
@@ -920,3 +969,155 @@ window.deshacerTomado = function (id) {
 // Dibujar las tarjetas apenas carga el panel (la sección puede estar
 // oculta, pero ya queda lista en el DOM para cuando el paciente la abra)
 renderRecordatorios();
+
+// ==========================================
+// CHATBOT BÁSICO DE AYUDA (reglas, sin IA real)
+// ==========================================
+// No es inteligencia artificial de verdad — es un motor simple de
+// palabras clave con respuestas predefinidas. Suficiente para guiar
+// al paciente a la sección correcta sin salir del panel.
+(function () {
+  const chatbotToggle = document.getElementById("chatbotToggle");
+  const chatbotWindow = document.getElementById("chatbotWindow");
+  const chatbotClose = document.getElementById("chatbotClose");
+  const chatbotBody = document.getElementById("chatbotBody");
+  const chatbotForm = document.getElementById("chatbotForm");
+  const chatbotInput = document.getElementById("chatbotInput");
+  const chatbotQuickReplies = document.getElementById("chatbotQuickReplies");
+
+  if (!chatbotToggle) return; // esta página no tiene el widget
+
+  // Cada entrada: palabras clave a detectar en lo que escribe el
+  // paciente, la respuesta, y (opcional) una sección a la que llevarlo.
+  const FAQ = [
+    {
+      etiqueta: "¿Cómo agendo una cita?",
+      palabras: ["agendar", "cita", "cómo agendo", "reservar"],
+      respuesta: "Para agendar una cita, ve a \"Agendar Cita\" en el menú, elige especialidad, médico y horario disponible.",
+      seccion: "agendar",
+      nav: "nav-pac-agendar",
+    },
+    {
+      etiqueta: "¿Dónde veo mis resultados?",
+      palabras: ["resultado", "laboratorio", "examen", "analisis", "análisis"],
+      respuesta: "Tus resultados de laboratorio están en \"Resultados de Exámenes\". Ahí puedes descargarlos en PDF cuando estén disponibles.",
+      seccion: "laboratorio",
+      nav: "nav-pac-laboratorio",
+    },
+    {
+      etiqueta: "¿Cómo cambio mi contraseña?",
+      palabras: ["contraseña", "clave", "password"],
+      respuesta: "Puedes cambiar tu contraseña desde \"Mi Perfil\", en la sección \"Cambiar Contraseña\".",
+      seccion: "perfil",
+      nav: "nav-pac-perfil",
+    },
+    {
+      etiqueta: "¿Cómo cancelo una cita?",
+      palabras: ["cancelar"],
+      respuesta: "En \"Historial de Consultas\" encuentras tus citas pendientes con un botón para cancelarlas.",
+      seccion: "citas",
+      nav: "nav-pac-citas",
+    },
+    {
+      etiqueta: "Recordatorios de medicamentos",
+      palabras: ["recordatorio", "medicamento", "pastilla", "tratamiento"],
+      respuesta: "Tus tratamientos activos y recordatorios de medicamentos están en la sección \"Recordatorios\".",
+      seccion: "recordatorios",
+      nav: "nav-pac-recordatorios",
+    },
+  ];
+
+  const MENSAJE_BIENVENIDA =
+    "¡Hola! Soy el asistente de Vitalis Tech. Elige una pregunta rápida o escribe la tuya.";
+  const MENSAJE_SIN_COINCIDENCIA =
+    "No encontré una respuesta exacta para eso. Prueba con una de estas opciones, o contacta directamente a tu centro de salud:";
+
+  let chatIniciado = false;
+
+  function agregarMensaje(texto, tipo, accion) {
+    const burbuja = document.createElement("div");
+    burbuja.className = `chatbot-msg chatbot-msg--${tipo}`;
+    burbuja.textContent = texto;
+
+    if (accion) {
+      const boton = document.createElement("button");
+      boton.type = "button";
+      boton.className = "chatbot-msg-action";
+      boton.innerHTML = '<i class="fas fa-arrow-right"></i> Llévame ahí';
+      boton.addEventListener("click", function () {
+        mostrarSeccionPaciente(accion.seccion, accion.nav);
+        chatbotWindow.classList.add("d-none");
+      });
+      burbuja.appendChild(document.createElement("br"));
+      burbuja.appendChild(boton);
+    }
+
+    chatbotBody.appendChild(burbuja);
+    chatbotBody.scrollTop = chatbotBody.scrollHeight;
+  }
+
+  function renderQuickReplies() {
+    chatbotQuickReplies.innerHTML = "";
+    FAQ.forEach(function (item) {
+      const boton = document.createElement("button");
+      boton.type = "button";
+      boton.className = "chatbot-quick-reply";
+      boton.textContent = item.etiqueta;
+      boton.addEventListener("click", function () {
+        responderPregunta(item.etiqueta, item);
+      });
+      chatbotQuickReplies.appendChild(boton);
+    });
+  }
+
+  function buscarEnFAQ(texto) {
+    const textoNormalizado = texto.toLowerCase();
+    return FAQ.find(function (item) {
+      return item.palabras.some(function (palabra) {
+        return textoNormalizado.includes(palabra);
+      });
+    });
+  }
+
+  function responderPregunta(textoUsuario, itemEncontrado) {
+    agregarMensaje(textoUsuario, "user");
+
+    if (itemEncontrado) {
+      agregarMensaje(itemEncontrado.respuesta, "bot", {
+        seccion: itemEncontrado.seccion,
+        nav: itemEncontrado.nav,
+      });
+    } else {
+      agregarMensaje(MENSAJE_SIN_COINCIDENCIA, "bot");
+    }
+  }
+
+  function iniciarChatSiHaceFalta() {
+    if (chatIniciado) return;
+    chatIniciado = true;
+    agregarMensaje(MENSAJE_BIENVENIDA, "bot");
+    renderQuickReplies();
+  }
+
+  chatbotToggle.addEventListener("click", function () {
+    chatbotWindow.classList.toggle("d-none");
+    if (!chatbotWindow.classList.contains("d-none")) {
+      iniciarChatSiHaceFalta();
+      chatbotInput.focus();
+    }
+  });
+
+  chatbotClose.addEventListener("click", function () {
+    chatbotWindow.classList.add("d-none");
+  });
+
+  chatbotForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const texto = chatbotInput.value.trim();
+    if (!texto) return;
+
+    const coincidencia = buscarEnFAQ(texto);
+    responderPregunta(texto, coincidencia);
+    chatbotInput.value = "";
+  });
+})();

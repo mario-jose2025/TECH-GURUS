@@ -16,6 +16,7 @@
 
   <!-- Tu CSS Personalizado -->
   <link rel="stylesheet" href="../css/pages/admindstyles.css">
+  <link rel="stylesheet" href="../css/components/chatbot.css">
 </head>
 
 <body id="page-top">
@@ -772,6 +773,24 @@
 
   </div>
   <!-- End of Page Wrapper -->
+
+  <!-- ==================== CHATBOT DE AYUDA ==================== -->
+  <button id="chatbotToggle" class="chatbot-fab" title="Asistente Vitalis">
+    <i class="fas fa-comment-medical"></i>
+  </button>
+
+  <div id="chatbotWindow" class="chatbot-window d-none">
+    <div class="chatbot-header">
+      <span><i class="fas fa-robot mr-2"></i>Asistente Vitalis</span>
+      <button id="chatbotClose" class="chatbot-close" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="chatbot-body" id="chatbotBody"></div>
+    <div class="chatbot-quick-replies" id="chatbotQuickReplies"></div>
+    <form class="chatbot-input-row" id="chatbotForm">
+      <input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." autocomplete="off" />
+      <button type="submit" aria-label="Enviar"><i class="fas fa-paper-plane"></i></button>
+    </form>
+  </div>
 
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

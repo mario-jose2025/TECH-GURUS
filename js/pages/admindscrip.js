@@ -140,12 +140,85 @@ if (formExpediente) {
   });
 }
 
+// ==========================================
+// CONSULTAS MÉDICAS (localStorage)
+// ==========================================
+// Cuando el paciente hace clic en "Ver Detalles" de una cita Atendida
+// (pacientes.js), busca aquí el registro real con este mismo citaId.
+const CONSULTAS_STORAGE_KEY = "vitalis_consultas";
+
+function obtenerConsultas() {
+  const raw = localStorage.getItem(CONSULTAS_STORAGE_KEY);
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn("No se pudo leer las consultas guardadas.", e);
+    return [];
+  }
+}
+
+function guardarConsultas(lista) {
+  localStorage.setItem(CONSULTAS_STORAGE_KEY, JSON.stringify(lista));
+}
+
 const formConsulta = document.getElementById("form-registrar-consulta");
 if (formConsulta) {
   formConsulta.addEventListener("submit", (e) => {
     e.preventDefault();
+
+    if (!formConsulta.checkValidity()) {
+      formConsulta.reportValidity();
+      return;
+    }
+
+    const citaId = document.getElementById("con-cita-id").value;
+
+    const nuevaConsulta = {
+      id: Date.now(),
+      citaId: citaId ? Number(citaId) : null,
+      paciente: document.getElementById("con-paciente").value.trim(),
+      especialidad: document.getElementById("con-especialidad").value,
+      fecha: document.getElementById("con-fecha").value,
+      signosVitales: {
+        presionArterial: document.getElementById("con-pa").value.trim(),
+        frecuenciaCardiaca: document.getElementById("con-fc").value.trim(),
+        temperatura: document.getElementById("con-temp").value.trim(),
+        peso: document.getElementById("con-peso").value.trim(),
+        talla: document.getElementById("con-talla").value.trim(),
+      },
+      motivo: document.getElementById("con-motivo").value.trim(),
+      diagnostico: document.getElementById("con-diagnostico").value.trim(),
+      tipoDiagnostico: document.getElementById("con-tipodiag").value,
+      receta: document.getElementById("con-receta").value.trim(),
+      indicaciones: document.getElementById("con-indicaciones").value.trim(),
+      medico: `${datosAdminDemo.cargo} ${datosAdminDemo.apellidos}`,
+    };
+
+    const consultas = obtenerConsultas();
+    consultas.push(nuevaConsulta);
+    guardarConsultas(consultas);
+
+    // Si esta consulta viene de una cita real, ahora sí la marcamos
+    // "Atendida" — recién que hay un diagnóstico de verdad guardado.
+    if (nuevaConsulta.citaId) {
+      const citas = obtenerCitasAdmin();
+      const cita = citas.find((c) => c.id === nuevaConsulta.citaId);
+      if (cita) {
+        cita.estado = "Atendida";
+        guardarCitasAdmin(citas);
+      }
+    }
+
     alert("¡Consulta registrada exitosamente!");
     formConsulta.reset();
+    document.getElementById("con-cita-id").value = "";
+
+    const alertaVinculada = document.getElementById("alerta-consulta-vinculada");
+    if (alertaVinculada) alertaVinculada.classList.add("d-none");
+
+    // Volver a Agenda Médica para ver el estado actualizado de la cita
+    mostrarSeccion("agenda", "nav-agenda");
   });
 }
 
@@ -357,11 +430,27 @@ window.iniciarConsultaCitaAdmin = function (id) {
   const cita = citas.find((c) => c.id === id);
   if (!cita) return;
 
-  cita.estado = "Atendida";
-  guardarCitasAdmin(citas);
-  renderCitasAdmin();
+  // Precargar el formulario de "Registrar Consulta" con los datos de
+  // esta cita — la cita pasa a "Atendida" hasta que se GUARDE la
+  // consulta, no antes (así no queda "atendida" sin diagnóstico real).
+  document.getElementById("con-cita-id").value = cita.id;
+  document.getElementById("con-paciente").value = cita.nombrePaciente || "";
+  document.getElementById("con-fecha").value = cita.fecha;
 
-  alert("Cita marcada como atendida. Recuerda registrar el diagnóstico en \"Consultas Médicas\".");
+  const selectEspecialidad = document.getElementById("con-especialidad");
+  const opcionCoincide = Array.from(selectEspecialidad.options).find(
+    (o) => o.value === cita.especialidad
+  );
+  selectEspecialidad.value = opcionCoincide ? cita.especialidad : "";
+
+  const alertaVinculada = document.getElementById("alerta-consulta-vinculada");
+  const textoVinculada = document.getElementById("texto-consulta-vinculada");
+  if (alertaVinculada && textoVinculada) {
+    textoVinculada.textContent = `Esta consulta se vinculará a la cita de ${cita.nombrePaciente} con ${cita.medico} (${formatearFechaAdmin(cita.fecha)}). Al guardar, la cita quedará marcada como "Atendida".`;
+    alertaVinculada.classList.remove("d-none");
+  }
+
+  mostrarSeccion("consultas", "nav-consultas");
 };
 
 window.cancelarCitaAdmin = function (id) {
@@ -821,3 +910,152 @@ if (formMedico) {
 // Dibujar la tabla apenas carga el panel (la sección puede estar oculta,
 // pero la tabla ya vive en el DOM lista para cuando el admin entre a verla)
 renderTablaMedicos();
+
+// ==========================================
+// CHATBOT BÁSICO DE AYUDA (reglas, sin IA real)
+// ==========================================
+// Mismo motor que el del panel de paciente, con preguntas frecuentes
+// propias del personal de salud.
+(function () {
+  const chatbotToggle = document.getElementById("chatbotToggle");
+  const chatbotWindow = document.getElementById("chatbotWindow");
+  const chatbotClose = document.getElementById("chatbotClose");
+  const chatbotBody = document.getElementById("chatbotBody");
+  const chatbotForm = document.getElementById("chatbotForm");
+  const chatbotInput = document.getElementById("chatbotInput");
+  const chatbotQuickReplies = document.getElementById("chatbotQuickReplies");
+
+  if (!chatbotToggle) return; // esta página no tiene el widget
+
+  const FAQ = [
+    {
+      etiqueta: "¿Cómo registro un médico?",
+      palabras: ["registrar médico", "médico nuevo", "agregar médico", "medico"],
+      respuesta: "Ve a \"Gestionar Médicos\" y llena el formulario con sus datos y especialidad. Aparecerá disponible para que los pacientes lo elijan al agendar.",
+      seccion: "medicos",
+      nav: "nav-medicos",
+    },
+    {
+      etiqueta: "¿Cómo confirmo una cita?",
+      palabras: ["confirmar", "cita pendiente", "aprobar cita"],
+      respuesta: "En \"Agenda Médica\" verás las citas \"Pendiente\" de pacientes. Haz clic en el ✓ para confirmarlas.",
+      seccion: "agenda",
+      nav: "nav-agenda",
+    },
+    {
+      etiqueta: "¿Cómo subo un resultado de laboratorio?",
+      palabras: ["laboratorio", "resultado", "examen", "subir"],
+      respuesta: "En \"Subir Laboratorio\" completa el paciente, tipo de examen y adjunta el archivo. Se refleja de inmediato en el panel del paciente.",
+      seccion: "laboratorio",
+      nav: "nav-laboratorio",
+    },
+    {
+      etiqueta: "¿Cómo registro una consulta?",
+      palabras: ["consulta", "diagnostico", "diagnóstico", "receta"],
+      respuesta: "Desde \"Agenda Médica\", en una cita Confirmada, haz clic en ▶ \"Iniciar Consulta\" — te lleva directo al formulario con los datos precargados.",
+      seccion: "consultas",
+      nav: "nav-consultas",
+    },
+    {
+      etiqueta: "Editar mi perfil",
+      palabras: ["perfil", "mi cuenta", "foto de perfil"],
+      respuesta: "Puedes editar tus datos, tu cargo y subir una foto desde \"Mi Perfil\".",
+      seccion: "perfil",
+      nav: "nav-admin-perfil",
+    },
+  ];
+
+  const MENSAJE_BIENVENIDA =
+    "¡Hola! Soy el asistente de Vitalis Tech. Elige una pregunta rápida o escribe la tuya.";
+  const MENSAJE_SIN_COINCIDENCIA =
+    "No encontré una respuesta exacta para eso. Prueba con una de estas opciones:";
+
+  let chatIniciado = false;
+
+  function agregarMensaje(texto, tipo, accion) {
+    const burbuja = document.createElement("div");
+    burbuja.className = `chatbot-msg chatbot-msg--${tipo}`;
+    burbuja.textContent = texto;
+
+    if (accion) {
+      const boton = document.createElement("button");
+      boton.type = "button";
+      boton.className = "chatbot-msg-action";
+      boton.innerHTML = '<i class="fas fa-arrow-right"></i> Llévame ahí';
+      boton.addEventListener("click", function (event) {
+        mostrarSeccion(accion.seccion, accion.nav, event);
+        chatbotWindow.classList.add("d-none");
+      });
+      burbuja.appendChild(document.createElement("br"));
+      burbuja.appendChild(boton);
+    }
+
+    chatbotBody.appendChild(burbuja);
+    chatbotBody.scrollTop = chatbotBody.scrollHeight;
+  }
+
+  function renderQuickReplies() {
+    chatbotQuickReplies.innerHTML = "";
+    FAQ.forEach(function (item) {
+      const boton = document.createElement("button");
+      boton.type = "button";
+      boton.className = "chatbot-quick-reply";
+      boton.textContent = item.etiqueta;
+      boton.addEventListener("click", function () {
+        responderPregunta(item.etiqueta, item);
+      });
+      chatbotQuickReplies.appendChild(boton);
+    });
+  }
+
+  function buscarEnFAQ(texto) {
+    const textoNormalizado = texto.toLowerCase();
+    return FAQ.find(function (item) {
+      return item.palabras.some(function (palabra) {
+        return textoNormalizado.includes(palabra);
+      });
+    });
+  }
+
+  function responderPregunta(textoUsuario, itemEncontrado) {
+    agregarMensaje(textoUsuario, "user");
+
+    if (itemEncontrado) {
+      agregarMensaje(itemEncontrado.respuesta, "bot", {
+        seccion: itemEncontrado.seccion,
+        nav: itemEncontrado.nav,
+      });
+    } else {
+      agregarMensaje(MENSAJE_SIN_COINCIDENCIA, "bot");
+    }
+  }
+
+  function iniciarChatSiHaceFalta() {
+    if (chatIniciado) return;
+    chatIniciado = true;
+    agregarMensaje(MENSAJE_BIENVENIDA, "bot");
+    renderQuickReplies();
+  }
+
+  chatbotToggle.addEventListener("click", function () {
+    chatbotWindow.classList.toggle("d-none");
+    if (!chatbotWindow.classList.contains("d-none")) {
+      iniciarChatSiHaceFalta();
+      chatbotInput.focus();
+    }
+  });
+
+  chatbotClose.addEventListener("click", function () {
+    chatbotWindow.classList.add("d-none");
+  });
+
+  chatbotForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const texto = chatbotInput.value.trim();
+    if (!texto) return;
+
+    const coincidencia = buscarEnFAQ(texto);
+    responderPregunta(texto, coincidencia);
+    chatbotInput.value = "";
+  });
+})();
