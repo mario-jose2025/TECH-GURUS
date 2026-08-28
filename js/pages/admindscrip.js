@@ -89,6 +89,12 @@ window.mostrarSeccion = function (idSeccion, idNav, event) {
       poblarSelectMedicosAgenda();
       renderCitasAdmin();
     }
+
+    // Si entramos (o volvemos) al Dashboard General, refrescamos las
+    // métricas reales y la gráfica por si algo cambió mientras tanto
+    if (idSeccion === 'resumen') {
+      renderDashboardResumen();
+    }
   }
 
   // 3. Actualizar la clase 'active' en el menú lateral
@@ -1059,3 +1065,93 @@ renderTablaMedicos();
     chatbotInput.value = "";
   });
 })();
+
+// ==========================================
+// DASHBOARD GENERAL: MÉTRICAS REALES
+// ==========================================
+// Reutiliza los mismos datos (localStorage) que ya alimentan Médicos,
+// Agenda, Laboratorio — nada de números inventados.
+let miGraficoResumenCitas = null;
+
+function renderDashboardResumen() {
+  const elPendientes = document.getElementById("dash-citas-pendientes");
+  if (!elPendientes) return; // esta página no tiene el dashboard
+
+  const citas = obtenerCitasAdmin();
+  const medicos = obtenerMedicos();
+  const resultados = obtenerResultadosAdmin();
+
+  const pendientes = citas.filter((c) => c.estado === "Pendiente");
+  const confirmadas = citas.filter((c) => c.estado === "Confirmada");
+  const atendidas = citas.filter((c) => c.estado === "Atendida");
+  const canceladas = citas.filter((c) => c.estado === "Cancelada");
+
+  // ---------- Tarjetas de métricas ----------
+  elPendientes.textContent = pendientes.length;
+  document.getElementById("dash-citas-confirmadas").textContent = confirmadas.length;
+  document.getElementById("dash-medicos-activos").textContent =
+    medicos.filter((m) => m.estado === "Activo").length;
+  document.getElementById("dash-laboratorios-subidos").textContent = resultados.length;
+
+  // ---------- Tabla de "Citas por Confirmar" (máx. 5, acción directa) ----------
+  const tbody = document.getElementById("dash-tabla-pendientes-body");
+  if (tbody) {
+    if (pendientes.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="text-center text-muted py-4">
+            <i class="fas fa-check-circle mr-1"></i> No hay citas pendientes de confirmar. ¡Todo al día!
+          </td>
+        </tr>`;
+    } else {
+      tbody.innerHTML = pendientes.slice(0, 5).map((c) => `
+        <tr>
+          <td class="font-weight-bold">${c.nombrePaciente || "—"}</td>
+          <td>${c.medico}</td>
+          <td>${formatearFechaAdmin(c.fecha)}<br><small class="text-muted">${c.hora}</small></td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-light text-success" title="Confirmar" onclick="confirmarCitaAdmin(${c.id}); renderDashboardResumen();">
+              <i class="fas fa-check"></i>
+            </button>
+            <button class="btn btn-sm btn-light text-danger" title="Cancelar" onclick="cancelarCitaAdmin(${c.id}); renderDashboardResumen();">
+              <i class="fas fa-xmark"></i>
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+  }
+
+  // ---------- Gráfica de distribución ----------
+  const elCanvas = document.getElementById("graficoResumenCitas");
+  if (elCanvas && typeof Chart !== "undefined") {
+    if (miGraficoResumenCitas) {
+      miGraficoResumenCitas.destroy();
+      miGraficoResumenCitas = null;
+    }
+
+    const datos = [pendientes.length, confirmadas.length, atendidas.length, canceladas.length];
+    const sinDatos = datos.every((n) => n === 0);
+
+    miGraficoResumenCitas = new Chart(elCanvas.getContext("2d"), {
+      type: "doughnut",
+      data: {
+        labels: ["Pendientes", "Confirmadas", "Atendidas", "Canceladas"],
+        datasets: [{
+          data: sinDatos ? [1, 0, 0, 0] : datos,
+          backgroundColor: sinDatos
+            ? ["#e9ecef", "#e9ecef", "#e9ecef", "#e9ecef"]
+            : ["#f6c23e", "#36b9cc", "#1cc88a", "#e74a3b"],
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } } },
+      },
+    });
+  }
+}
+
+// Dibujar el dashboard apenas carga la página, ya que es la vista por defecto
+renderDashboardResumen();
