@@ -154,4 +154,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!input) return;
     input.addEventListener("input", limpiarErroresLogin);
   });
+
+  // 4. "¿Olvidaste tu contraseña?" — solo aplica a pacientes, ya que
+  // las cuentas de personal de salud las administra el centro, no se
+  // autogestionan desde aquí.
+  const forgotPasswordLink = document.getElementById("forgotPassword");
+  if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      const rolActual = inputRolOculto ? inputRolOculto.value : "paciente";
+      if (rolActual === "admin") {
+        alert("Para restablecer tu acceso administrativo, contacta al equipo técnico de tu centro de salud.");
+        return;
+      }
+
+      window.location.href = "recuperar-password.html";
+    });
+  }
 });
