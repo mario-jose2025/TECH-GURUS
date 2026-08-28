@@ -2,6 +2,10 @@
 // LÓGICA DE INICIO DE SESIÓN - VITALIS TECH
 // ==========================================
 
+// URL del backend — cámbiala aquí si tu servidor corre en otro puerto
+// o cuando lo subas a un servidor real (ej. Render, Railway, Azure).
+const API_BASE_URL = "http://localhost:3000/api";
+
 document.addEventListener("DOMContentLoaded", () => {
   const formLogin = document.getElementById("loginForm");
   const botonesTab = document.querySelectorAll(".auth-tab");
@@ -18,22 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const usernameError = document.getElementById("usernameError");
   const passwordError = document.getElementById("passwordError");
 
-  // Misma clave que usa registro.js para guardar las cuentas de pacientes
-  const CUENTAS_PACIENTES_KEY = "vitalis_cuentas_pacientes";
   // Clave donde queda "quién es el paciente logueado ahora mismo" —
   // pacientes.js la lee para precargar el nombre real en Mi Perfil.
   const SESION_PACIENTE_KEY = "vitalis_sesion_paciente";
-
-  function obtenerCuentasPacientes() {
-    const raw = localStorage.getItem(CUENTAS_PACIENTES_KEY);
-    if (!raw) return [];
-    try {
-      return JSON.parse(raw);
-    } catch (e) {
-      console.warn("No se pudo leer las cuentas guardadas.", e);
-      return [];
-    }
-  }
 
   function limpiarErroresLogin() {
     usernameGroup.classList.remove("has-error");
@@ -89,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 2. Manejo del envío del formulario (Login)
   if (formLogin) {
-    formLogin.addEventListener("submit", (e) => {
+    formLogin.addEventListener("submit", async (e) => {
       e.preventDefault();
       limpiarErroresLogin();
 
@@ -103,33 +94,61 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (rolSeleccionado === "admin") {
-        // Credenciales temporales de prueba para Admin — el personal de
-        // salud no se autorregistra, sus cuentas las crea el centro
-        // (esto se vuelve una validación real contra el backend más adelante).
-        if (usuario === "admin" && password === "admin123") {
+        // ✅ Ya NO hay credenciales escritas en el código — el navegador
+        // le pregunta al backend, y el backend compara contra la tabla
+        // `usuarios` de SQL Server usando bcrypt. Ver README >
+        // "Consideraciones de seguridad" para el detalle de este cambio.
+        try {
+          const respuesta = await fetch(`${API_BASE_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usuario, password, rol: "admin" }),
+          });
+
+          const datos = await respuesta.json();
+
+          if (!respuesta.ok) {
+            mostrarErrorCredenciales(datos.mensaje || "Usuario o contraseña de administrador incorrectos.");
+            return;
+          }
+
+          // Guardamos los datos reales del admin que inició sesión, para
+          // cuando conectemos "Mi Perfil" del admin a estos datos reales
+          // en vez de los de ejemplo que usa admindscrip.js hoy.
+          localStorage.setItem("vitalis_sesion_admin", JSON.stringify(datos.usuario));
           window.location.href = "admind.html";
-        } else {
-          mostrarErrorCredenciales("Usuario o contraseña de administrador incorrectos.");
+        } catch (error) {
+          console.error("Error al conectar con el backend:", error);
+          mostrarErrorCredenciales("No se pudo conectar con el servidor. ¿Está corriendo el backend?");
         }
         return;
       }
 
-      // Acceso para Paciente — validar contra las cuentas reales
-      // creadas desde registro.html.
-      const cuentas = obtenerCuentasPacientes();
-      const cuenta = cuentas.find(
-        (c) => c.usuario.toLowerCase() === usuario.toLowerCase() && c.password === password
-      );
+      // Acceso para Paciente — ahora sí contra el backend real, ya que
+      // registro.js guarda las cuentas en la tabla `usuarios` de SQL Server.
+      try {
+        const respuesta = await fetch(`${API_BASE_URL}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usuario, password, rol: "paciente" }),
+        });
 
-      if (!cuenta) {
-        mostrarErrorCredenciales("Usuario o contraseña incorrectos.");
-        return;
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+          mostrarErrorCredenciales(datos.mensaje || "Usuario o contraseña incorrectos.");
+          return;
+        }
+
+        // Guardamos quién inició sesión (para las citas nuevas) y el
+        // perfil completo que devolvió el backend (para "Mi Perfil").
+        localStorage.setItem(SESION_PACIENTE_KEY, datos.usuario.usuario);
+        localStorage.setItem("vitalis_perfil_paciente_backend", JSON.stringify(datos.usuario));
+        window.location.href = "pacientes.html";
+      } catch (error) {
+        console.error("Error al conectar con el backend:", error);
+        mostrarErrorCredenciales("No se pudo conectar con el servidor. ¿Está corriendo el backend?");
       }
-
-      // Guardamos quién inició sesión para que pacientes.js pueda
-      // precargar sus datos reales en Mi Perfil y en las citas nuevas.
-      localStorage.setItem(SESION_PACIENTE_KEY, cuenta.usuario);
-      window.location.href = "pacientes.html";
     });
   }
 

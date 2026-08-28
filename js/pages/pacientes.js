@@ -23,6 +23,25 @@ const CUENTAS_PACIENTES_KEY = "vitalis_cuentas_pacientes";
 const SESION_PACIENTE_KEY = "vitalis_sesion_paciente";
 
 function resolverDatosPacienteActivo() {
+  // Prioridad 1: sesión real del backend (login validado contra SQL Server)
+  const perfilBackend = localStorage.getItem("vitalis_perfil_paciente_backend");
+  if (perfilBackend) {
+    try {
+      const datos = JSON.parse(perfilBackend);
+      // La base de datos devuelve "fecha_registro" (nombre real de la
+      // columna) — lo normalizamos a "fechaRegistro" para que el resto
+      // de esta página no tenga que cambiar cómo lo usa.
+      const fechaFormateada = datos.fecha_registro
+        ? formatearFecha(String(datos.fecha_registro).split("T")[0])
+        : datos.fechaRegistro || "—";
+      return { ...datos, fechaRegistro: fechaFormateada };
+    } catch (e) {
+      console.warn("No se pudo leer el perfil del backend, usando datos de ejemplo.", e);
+    }
+  }
+
+  // Prioridad 2 (compatibilidad hacia atrás, cuentas viejas de antes de
+  // conectar el backend): buscar en localStorage.
   const usuarioSesion = localStorage.getItem(SESION_PACIENTE_KEY);
   if (!usuarioSesion) return datosPacienteDemo;
 
