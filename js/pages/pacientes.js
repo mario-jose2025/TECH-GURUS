@@ -14,6 +14,48 @@ const datosPacienteDemo = {
   fechaRegistro: "15/01/2026",
 };
 
+// ---------- Resolver quién inició sesión de verdad ----------
+// Mismas claves que usan registro.js y login.js. Si alguien entró con
+// una cuenta real (creada en el formulario de registro), sus datos
+// reemplazan al "Paciente Demo" en todo el panel — perfil, topbar y
+// el nombre que se guarda al agendar una cita nueva.
+const CUENTAS_PACIENTES_KEY = "vitalis_cuentas_pacientes";
+const SESION_PACIENTE_KEY = "vitalis_sesion_paciente";
+
+function resolverDatosPacienteActivo() {
+  const usuarioSesion = localStorage.getItem(SESION_PACIENTE_KEY);
+  if (!usuarioSesion) return datosPacienteDemo;
+
+  const raw = localStorage.getItem(CUENTAS_PACIENTES_KEY);
+  if (!raw) return datosPacienteDemo;
+
+  try {
+    const cuentas = JSON.parse(raw);
+    const cuenta = cuentas.find(
+      (c) => c.usuario.toLowerCase() === usuarioSesion.toLowerCase()
+    );
+    return cuenta || datosPacienteDemo;
+  } catch (e) {
+    console.warn("No se pudo leer la cuenta del paciente logueado, usando datos de ejemplo.", e);
+    return datosPacienteDemo;
+  }
+}
+
+const datosPacienteActivo = resolverDatosPacienteActivo();
+
+// Reflejar el nombre real en el topbar y en "Agendar Cita" apenas carga la página
+document.addEventListener("DOMContentLoaded", () => {
+  const nombreCompletoActivo = `${datosPacienteActivo.nombres} ${datosPacienteActivo.apellidos}`;
+
+  const topbarNombre = document.getElementById("topbar-paciente-nombre");
+  if (topbarNombre) topbarNombre.textContent = nombreCompletoActivo;
+
+  const agendarTitular = document.getElementById("agendar-nombre-titular");
+  if (agendarTitular) {
+    agendarTitular.textContent = `${nombreCompletoActivo} (Expediente #VT-2026-849)`;
+  }
+});
+
 // 1. Navegación entre Secciones del Paciente
 window.mostrarSeccionPaciente = function (idSeccion, idNav, event) {
   // Evitar que el navegador salte al inicio de la página (href="#")
@@ -350,7 +392,7 @@ if (formAgendar) {
     const nuevoId = citas.length > 0 ? Math.max(...citas.map((c) => c.id)) + 1 : 1;
     citas.push({
       id: nuevoId,
-      nombrePaciente: `${datosPacienteDemo.nombres} ${datosPacienteDemo.apellidos}`,
+      nombrePaciente: `${datosPacienteActivo.nombres} ${datosPacienteActivo.apellidos}`,
       fecha,
       hora,
       medico,
@@ -532,20 +574,20 @@ window.descargarResultado = function (id) {
 document.addEventListener("DOMContentLoaded", () => {
   const inputNombres = document.getElementById("perfil-nombres");
   if (inputNombres) {
-    document.getElementById("perfil-nombres").value = datosPacienteDemo.nombres;
-    document.getElementById("perfil-apellidos").value = datosPacienteDemo.apellidos;
-    document.getElementById("perfil-correo").value = datosPacienteDemo.correo;
-    document.getElementById("perfil-telefono").value = datosPacienteDemo.telefono;
-    document.getElementById("perfil-usuario").value = datosPacienteDemo.usuario;
+    document.getElementById("perfil-nombres").value = datosPacienteActivo.nombres;
+    document.getElementById("perfil-apellidos").value = datosPacienteActivo.apellidos;
+    document.getElementById("perfil-correo").value = datosPacienteActivo.correo;
+    document.getElementById("perfil-telefono").value = datosPacienteActivo.telefono;
+    document.getElementById("perfil-usuario").value = datosPacienteActivo.usuario;
 
     document.getElementById("perfil-nombre-completo").textContent =
-      `${datosPacienteDemo.nombres} ${datosPacienteDemo.apellidos}`;
-    document.getElementById("perfil-usuario-actual").textContent = `@${datosPacienteDemo.usuario}`;
-    document.getElementById("perfil-fecha-registro").textContent = datosPacienteDemo.fechaRegistro;
+      `${datosPacienteActivo.nombres} ${datosPacienteActivo.apellidos}`;
+    document.getElementById("perfil-usuario-actual").textContent = `@${datosPacienteActivo.usuario}`;
+    document.getElementById("perfil-fecha-registro").textContent = datosPacienteActivo.fechaRegistro;
 
     const iniciales =
-      datosPacienteDemo.nombres.charAt(0).toUpperCase() +
-      datosPacienteDemo.apellidos.charAt(0).toUpperCase();
+      datosPacienteActivo.nombres.charAt(0).toUpperCase() +
+      datosPacienteActivo.apellidos.charAt(0).toUpperCase();
     document.getElementById("perfil-avatar-iniciales").textContent = iniciales;
   }
 });
@@ -628,12 +670,39 @@ if (formEditarPerfil) {
     // Actualizar la vista previa (nombre, usuario, iniciales) con los nuevos datos
     const nombres = document.getElementById("perfil-nombres").value.trim();
     const apellidos = document.getElementById("perfil-apellidos").value.trim();
+    const correo = document.getElementById("perfil-correo").value.trim();
+    const telefono = document.getElementById("perfil-telefono").value.trim();
     const usuario = document.getElementById("perfil-usuario").value.trim();
 
     document.getElementById("perfil-nombre-completo").textContent = `${nombres} ${apellidos}`;
     document.getElementById("perfil-usuario-actual").textContent = `@${usuario}`;
     document.getElementById("perfil-avatar-iniciales").textContent =
       (nombres.charAt(0) + apellidos.charAt(0)).toUpperCase();
+
+    const topbarNombre = document.getElementById("topbar-paciente-nombre");
+    if (topbarNombre) topbarNombre.textContent = `${nombres} ${apellidos}`;
+
+    // Guardar de verdad en la cuenta (no solo en la pantalla) — solo si
+    // hay una sesión real (evita crear una cuenta fantasma cuando se
+    // prueba la página sin haber iniciado sesión, usando el demo).
+    const sesionActual = localStorage.getItem(SESION_PACIENTE_KEY);
+    if (sesionActual) {
+      const cuentas = JSON.parse(localStorage.getItem(CUENTAS_PACIENTES_KEY) || "[]");
+      const indice = cuentas.findIndex(
+        (c) => c.usuario.toLowerCase() === sesionActual.toLowerCase()
+      );
+
+      if (indice !== -1) {
+        cuentas[indice] = { ...cuentas[indice], nombres, apellidos, correo, telefono, usuario };
+        localStorage.setItem(CUENTAS_PACIENTES_KEY, JSON.stringify(cuentas));
+
+        // Si cambió su usuario, actualizamos el puntero de sesión también
+        localStorage.setItem(SESION_PACIENTE_KEY, usuario);
+
+        // Reflejar el cambio en memoria por si agenda una cita en esta misma visita
+        Object.assign(datosPacienteActivo, { nombres, apellidos, correo, telefono, usuario });
+      }
+    }
 
     alert("¡Tus datos se actualizaron exitosamente!");
 

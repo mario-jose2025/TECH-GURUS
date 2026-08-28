@@ -38,6 +38,34 @@
   const phoneGroup = document.getElementById("phoneGroup");
   const passwordGroup = document.getElementById("passwordGroup");
   const confirmPasswordGroup = document.getElementById("confirmPasswordGroup");
+  const usernameError = document.getElementById("usernameError");
+
+  // ---------- Cuentas de pacientes (localStorage) ----------
+  // Misma clave que usará login.js para validar credenciales y
+  // pacientes.js para precargar "Mi Perfil" con los datos reales.
+  const CUENTAS_PACIENTES_KEY = "vitalis_cuentas_pacientes";
+
+  function obtenerCuentasPacientes() {
+    const raw = localStorage.getItem(CUENTAS_PACIENTES_KEY);
+    if (!raw) return [];
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      console.warn("No se pudo leer las cuentas guardadas.", e);
+      return [];
+    }
+  }
+
+  function guardarCuentasPacientes(lista) {
+    localStorage.setItem(CUENTAS_PACIENTES_KEY, JSON.stringify(lista));
+  }
+
+  function fechaHoyFormateada() {
+    const hoy = new Date();
+    const dia = String(hoy.getDate()).padStart(2, "0");
+    const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+    return `${dia}/${mes}/${hoy.getFullYear()}`;
+  }
 
   function isValidEmail(value) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -84,6 +112,15 @@
     }
 
     if (!isValidUsername(usernameInput.value)) {
+      usernameError.textContent = "El usuario debe tener al menos 4 caracteres, sin espacios.";
+      setError(usernameGroup, true);
+      isValid = false;
+    } else if (
+      obtenerCuentasPacientes().some(
+        (cuenta) => cuenta.usuario.toLowerCase() === usernameInput.value.trim().toLowerCase()
+      )
+    ) {
+      usernameError.textContent = "Ese usuario ya está en uso. Elige otro.";
       setError(usernameGroup, true);
       isValid = false;
     } else {
@@ -118,18 +155,29 @@
 
     if (!isValid) return;
 
-    // Placeholder — aquí se conectará la llamada real al backend.
-    console.log("[Vitalis Tech] Registro de paciente:", {
-      firstName: firstNameInput.value.trim(),
-      lastName: lastNameInput.value.trim(),
-      email: emailInput.value.trim(),
-      username: usernameInput.value.trim(),
-      phone: phoneInput.value.trim(),
-    });
+    // Guardar la cuenta de verdad — esto es lo que login.js va a
+    // validar, y lo que pacientes.js va a mostrar en "Mi Perfil".
+    const nuevaCuenta = {
+      nombres: firstNameInput.value.trim(),
+      apellidos: lastNameInput.value.trim(),
+      correo: emailInput.value.trim(),
+      usuario: usernameInput.value.trim(),
+      telefono: phoneInput.value.trim(),
+      password: passwordInput.value, // demo sin backend — en producción esto se hashea en el servidor, nunca se guarda en texto plano
+      fechaRegistro: fechaHoyFormateada(),
+    };
 
-    // Una vez exista el backend: registrar al usuario y mandarlo a
-    // iniciar sesión con el usuario que acaba de crear.
-    // window.location.href = "login.html";
+    const cuentas = obtenerCuentasPacientes();
+    cuentas.push(nuevaCuenta);
+    guardarCuentasPacientes(cuentas);
+
+    alert(`¡Cuenta creada exitosamente, ${nuevaCuenta.nombres}! Ahora inicia sesión con tu usuario y contraseña.`);
+
+    // Dejamos el usuario recién creado listo para que el login lo
+    // precargue, así el paciente no tiene que volver a escribirlo.
+    sessionStorage.setItem("vitalis_ultimo_usuario_registrado", nuevaCuenta.usuario);
+
+    window.location.href = "login.html";
   });
 
   // Quita el estado de error apenas el usuario empieza a corregir

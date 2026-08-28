@@ -6,37 +6,79 @@ document.addEventListener("DOMContentLoaded", () => {
   const formLogin = document.getElementById("loginForm");
   const botonesTab = document.querySelectorAll(".auth-tab");
   const inputRolOculto = document.getElementById("selectedRole");
-  
+
   const authTitle = document.getElementById("authTitle");
   const authSubtitle = document.getElementById("authSubtitle");
   const registerPrompt = document.getElementById("registerPrompt");
 
-  // 1. Control del selector de pestañas (Paciente / Admind)
-  botonesTab.forEach(boton => {
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+  const usernameGroup = document.getElementById("usernameGroup");
+  const passwordGroup = document.getElementById("passwordGroup");
+  const usernameError = document.getElementById("usernameError");
+  const passwordError = document.getElementById("passwordError");
+
+  // Misma clave que usa registro.js para guardar las cuentas de pacientes
+  const CUENTAS_PACIENTES_KEY = "vitalis_cuentas_pacientes";
+  // Clave donde queda "quién es el paciente logueado ahora mismo" —
+  // pacientes.js la lee para precargar el nombre real en Mi Perfil.
+  const SESION_PACIENTE_KEY = "vitalis_sesion_paciente";
+
+  function obtenerCuentasPacientes() {
+    const raw = localStorage.getItem(CUENTAS_PACIENTES_KEY);
+    if (!raw) return [];
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      console.warn("No se pudo leer las cuentas guardadas.", e);
+      return [];
+    }
+  }
+
+  function limpiarErroresLogin() {
+    usernameGroup.classList.remove("has-error");
+    passwordGroup.classList.remove("has-error");
+  }
+
+  function mostrarErrorCredenciales(mensaje) {
+    usernameError.textContent = mensaje;
+    passwordError.textContent = mensaje;
+    usernameGroup.classList.add("has-error");
+    passwordGroup.classList.add("has-error");
+  }
+
+  // Si el paciente acaba de registrarse, le precargamos su usuario
+  // para que no tenga que volver a escribirlo.
+  const usuarioRecienRegistrado = sessionStorage.getItem("vitalis_ultimo_usuario_registrado");
+  if (usuarioRecienRegistrado && usernameInput) {
+    usernameInput.value = usuarioRecienRegistrado;
+    sessionStorage.removeItem("vitalis_ultimo_usuario_registrado");
+    if (passwordInput) passwordInput.focus();
+  }
+
+  // 1. Control del selector de pestañas (Paciente / Personal de salud)
+  botonesTab.forEach((boton) => {
     boton.addEventListener("click", (e) => {
       e.preventDefault();
 
-      // Quitar la clase activa de todos los botones y ponerla en el presionado
-      botonesTab.forEach(b => {
+      botonesTab.forEach((b) => {
         b.classList.remove("is-active");
         b.setAttribute("aria-selected", "false");
       });
-      
+
       const tabActual = e.currentTarget;
       tabActual.classList.add("is-active");
       tabActual.setAttribute("aria-selected", "true");
 
-      // Obtener el rol mediante el atributo data-role ("paciente" o "admin")
       const rol = tabActual.getAttribute("data-role");
-      if (inputRolOculto) {
-        inputRolOculto.value = rol;
-      }
+      if (inputRolOculto) inputRolOculto.value = rol;
 
-      // Ajustar textos dinámicos según el rol seleccionado para darle mejor UX
+      limpiarErroresLogin();
+
       if (rol === "admin") {
         if (authTitle) authTitle.textContent = "Acceso Administrativo";
         if (authSubtitle) authSubtitle.textContent = "Ingresa con tus credenciales de personal de salud o administración.";
-        if (registerPrompt) registerPrompt.style.display = "none"; // Los admins no se registran por aquí
+        if (registerPrompt) registerPrompt.style.display = "none"; // el personal de salud no se autorregistra
       } else {
         if (authTitle) authTitle.textContent = "Bienvenido de nuevo";
         if (authSubtitle) authSubtitle.textContent = "Ingresa tus datos para ver tus citas, resultados y más.";
@@ -49,43 +91,51 @@ document.addEventListener("DOMContentLoaded", () => {
   if (formLogin) {
     formLogin.addEventListener("submit", (e) => {
       e.preventDefault();
+      limpiarErroresLogin();
 
-      const usuario = document.getElementById("username")?.value.trim();
-      const password = document.getElementById("password")?.value.trim();
+      const usuario = usernameInput?.value.trim();
+      const password = passwordInput?.value.trim();
       const rolSeleccionado = inputRolOculto ? inputRolOculto.value : "paciente";
 
-      // Validaciones básicas
       if (!usuario || !password) {
-        alert("Por favor, completa todos los campos.");
+        mostrarErrorCredenciales("Completa usuario y contraseña.");
         return;
       }
 
-      if (password.length < 6) {
-        alert("La contraseña debe tener al menos 6 caracteres.");
-        return;
-      }
-
-      // 3. Simulación de redirección según el rol antes de conectar el backend
       if (rolSeleccionado === "admin") {
-        // Credenciales temporales de prueba para Admin
+        // Credenciales temporales de prueba para Admin — el personal de
+        // salud no se autorregistra, sus cuentas las crea el centro
+        // (esto se vuelve una validación real contra el backend más adelante).
         if (usuario === "admin" && password === "admin123") {
-          alert("¡Acceso exitoso al panel de administración!");
-          window.location.href = "admind.html"; // O la ruta a tu panel de admin
+          window.location.href = "admind.html";
         } else {
-          alert("Usuario o contraseña de administrador incorrectos.");
+          mostrarErrorCredenciales("Usuario o contraseña de administrador incorrectos.");
         }
-      } else {
-        // Acceso para Paciente
-        alert(`¡Bienvenido, ${usuario}!`);
-        window.location.href = "pacientes.html"; // Te manda al panel del paciente que diseñamos antes
+        return;
       }
+
+      // Acceso para Paciente — validar contra las cuentas reales
+      // creadas desde registro.html.
+      const cuentas = obtenerCuentasPacientes();
+      const cuenta = cuentas.find(
+        (c) => c.usuario.toLowerCase() === usuario.toLowerCase() && c.password === password
+      );
+
+      if (!cuenta) {
+        mostrarErrorCredenciales("Usuario o contraseña incorrectos.");
+        return;
+      }
+
+      // Guardamos quién inició sesión para que pacientes.js pueda
+      // precargar sus datos reales en Mi Perfil y en las citas nuevas.
+      localStorage.setItem(SESION_PACIENTE_KEY, cuenta.usuario);
+      window.location.href = "pacientes.html";
     });
   }
 
-  // 4. Funcionalidad opcional para mostrar/ocultar contraseña
+  // 3. Mostrar / ocultar contraseña
   const togglePasswordBtn = document.getElementById("togglePassword");
-  const passwordInput = document.getElementById("password");
-  
+
   if (togglePasswordBtn && passwordInput) {
     togglePasswordBtn.addEventListener("click", () => {
       const tipoActual = passwordInput.getAttribute("type");
@@ -98,4 +148,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // Quitar el estado de error apenas el paciente empieza a corregir
+  [usernameInput, passwordInput].forEach((input) => {
+    if (!input) return;
+    input.addEventListener("input", limpiarErroresLogin);
+  });
 });
