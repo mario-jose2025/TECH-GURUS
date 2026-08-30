@@ -1,4 +1,10 @@
 // ==========================================
+// 0. CONEXIÓN AL BACKEND
+// ==========================================
+// URL del backend — misma que usa login.js/registro.js del frontend público.
+const API_BASE_URL = "http://localhost:3000/api";
+
+// ==========================================
 // 1. VARIABLES GLOBALES DE INSTANCIA
 // ==========================================
 let miGraficoConsultas = null;
@@ -474,11 +480,14 @@ window.cancelarCitaAdmin = function (id) {
 
 // Poblar el select de médicos de "Programar Nueva Cita" con los médicos
 // REALES registrados en "Gestionar Médicos" (no una lista inventada)
-function poblarSelectMedicosAgenda() {
+async function poblarSelectMedicosAgenda() {
   const select = document.getElementById("age-medico");
   if (!select) return;
 
-  const medicosActivos = obtenerMedicos().filter((m) => m.estado === "Activo");
+  select.innerHTML = '<option value="">Cargando médicos...</option>';
+
+  const medicos = await obtenerMedicos();
+  const medicosActivos = medicos.filter((m) => m.estado.toLowerCase() === "activo");
   const valorPrevio = select.value;
 
   select.innerHTML = '<option value="">Seleccionar Médico...</option>';
@@ -740,37 +749,20 @@ if (formCambiarPasswordAdmin) {
 // ==========================================
 // 6. GESTIÓN DE MÉDICOS (registrar / editar / dar de baja)
 // ==========================================
-// Se guarda en localStorage bajo esta clave. El formulario de "Agendar Cita"
-// del paciente (pacientes.js) lee esta misma clave para mostrar los médicos
-// disponibles por especialidad. Cuando conectes el backend, reemplaza
-// obtenerMedicos()/guardarMedicos() por llamadas fetch() a tu API.
-const MEDICOS_STORAGE_KEY = "vitalis_medicos";
+// Ya NO usa localStorage — habla directo con el backend (SQL Server).
+// Nota: la base de datos guarda el estado en minúscula ("activo" /
+// "inactivo"), pero el formulario y la tabla lo muestran capitalizado
+// ("Activo" / "Inactivo") — por eso hay pequeñas conversiones abajo.
 
-function obtenerMedicos() {
-  const raw = localStorage.getItem(MEDICOS_STORAGE_KEY);
-  if (raw) {
-    try {
-      return JSON.parse(raw);
-    } catch (e) {
-      console.warn("No se pudo leer la lista de médicos guardada, se reinicia.", e);
-    }
+async function obtenerMedicos() {
+  try {
+    const respuesta = await fetch(`${API_BASE_URL}/medicos`);
+    if (!respuesta.ok) throw new Error("No se pudo obtener la lista de médicos.");
+    return await respuesta.json();
+  } catch (error) {
+    console.error("Error al obtener médicos:", error);
+    return [];
   }
-  // Semilla inicial la primera vez que se abre el panel (para que la demo
-  // no arranque vacía). Coincide con los médicos que antes estaban
-  // hardcodeados en pacientes.js.
-  const semilla = [
-    { id: 1, tratamiento: "Dr.", nombres: "Roberto", apellidos: "Gómez", cedula: "", telefono: "8888-0001", correo: "", especialidad: "medicina-general", licencia: "", horario: "Lunes a Viernes, 8:00am - 4:00pm", estado: "Activo" },
-    { id: 2, tratamiento: "Dra.", nombres: "María", apellidos: "López", cedula: "", telefono: "8888-0002", correo: "", especialidad: "medicina-general", licencia: "", horario: "Lunes a Viernes, 8:00am - 4:00pm", estado: "Activo" },
-    { id: 3, tratamiento: "Dr.", nombres: "Carlos", apellidos: "Ruiz", cedula: "", telefono: "8888-0003", correo: "", especialidad: "pediatria", licencia: "", horario: "Martes y Jueves, 9:00am - 1:00pm", estado: "Activo" },
-    { id: 4, tratamiento: "Dra.", nombres: "Sofía", apellidos: "Gutiérrez", cedula: "", telefono: "8888-0004", correo: "", especialidad: "ginecologia", licencia: "", horario: "Lunes, Miércoles y Viernes, 8:00am - 12:00pm", estado: "Activo" },
-    { id: 5, tratamiento: "Dr.", nombres: "Mario", apellidos: "Duarte", cedula: "", telefono: "8888-0005", correo: "", especialidad: "odontologia", licencia: "", horario: "Lunes a Viernes, 1:00pm - 5:00pm", estado: "Activo" },
-  ];
-  guardarMedicos(semilla);
-  return semilla;
-}
-
-function guardarMedicos(listaMedicos) {
-  localStorage.setItem(MEDICOS_STORAGE_KEY, JSON.stringify(listaMedicos));
 }
 
 const NOMBRES_ESPECIALIDAD = {
@@ -780,11 +772,18 @@ const NOMBRES_ESPECIALIDAD = {
   "odontologia": "Odontología",
 };
 
-function renderTablaMedicos() {
+function capitalizar(texto) {
+  if (!texto) return "";
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+async function renderTablaMedicos() {
   const tbody = document.getElementById("tabla-medicos-body");
   if (!tbody) return;
 
-  const medicos = obtenerMedicos();
+  tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4"><i class="fas fa-spinner fa-spin mr-1"></i> Cargando médicos...</td></tr>';
+
+  const medicos = await obtenerMedicos();
 
   if (medicos.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Todavía no hay médicos registrados.</td></tr>';
@@ -792,14 +791,15 @@ function renderTablaMedicos() {
   }
 
   tbody.innerHTML = medicos.map((m) => {
-    const badgeClase = m.estado === "Activo" ? "badge-success" : "badge-secondary";
+    const estadoTexto = capitalizar(m.estado);
+    const badgeClase = estadoTexto === "Activo" ? "badge-success" : "badge-secondary";
     const especialidadTexto = NOMBRES_ESPECIALIDAD[m.especialidad] || m.especialidad;
     return `
       <tr>
         <td class="font-weight-bold">${m.tratamiento} ${m.nombres} ${m.apellidos}</td>
         <td>${especialidadTexto}</td>
-        <td>${m.telefono}</td>
-        <td><span class="badge ${badgeClase}">${m.estado}</span></td>
+        <td>${m.telefono || "—"}</td>
+        <td><span class="badge ${badgeClase}">${estadoTexto}</span></td>
         <td class="text-center">
           <button class="btn btn-sm btn-light text-primary" title="Editar" onclick="editarMedico(${m.id})">
             <i class="fas fa-pen"></i>
@@ -825,8 +825,8 @@ window.cancelarEdicionMedico = function () {
   limpiarFormMedico();
 };
 
-window.editarMedico = function (id) {
-  const medicos = obtenerMedicos();
+window.editarMedico = async function (id) {
+  const medicos = await obtenerMedicos();
   const medico = medicos.find((m) => m.id === id);
   if (!medico) return;
 
@@ -835,55 +835,68 @@ window.editarMedico = function (id) {
   document.getElementById("med-nombres").value = medico.nombres;
   document.getElementById("med-apellidos").value = medico.apellidos;
   document.getElementById("med-cedula").value = medico.cedula || "";
-  document.getElementById("med-telefono").value = medico.telefono;
+  document.getElementById("med-telefono").value = medico.telefono || "";
   document.getElementById("med-correo").value = medico.correo || "";
   document.getElementById("med-especialidad").value = medico.especialidad;
   document.getElementById("med-licencia").value = medico.licencia || "";
-  document.getElementById("med-estado").value = medico.estado;
+  document.getElementById("med-estado").value = capitalizar(medico.estado);
   document.getElementById("med-horario").value = medico.horario || "";
 
   document.getElementById("tituloFormMedico").innerHTML = '<i class="fas fa-user-pen mr-2"></i>Editando: ' + medico.tratamiento + " " + medico.nombres + " " + medico.apellidos;
   document.getElementById("btn-guardar-medico").innerHTML = '<i class="fas fa-save mr-2"></i> Actualizar Médico';
   document.getElementById("btn-cancelar-edicion-medico").style.display = "inline-block";
 
-  // Llevar la vista al formulario para que el usuario vea que entró en modo edición
   document.getElementById("form-registrar-medico").scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
-window.eliminarMedico = function (id) {
-  const medicos = obtenerMedicos();
+window.eliminarMedico = async function (id) {
+  const medicos = await obtenerMedicos();
   const medico = medicos.find((m) => m.id === id);
   if (!medico) return;
 
   const confirmado = confirm(
-    `¿Seguro que quieres eliminar a ${medico.tratamiento} ${medico.nombres} ${medico.apellidos}?\n\n` +
-    `Tip: si el médico solo está de baja temporalmente, mejor edítalo y cambia su Estado a "Inactivo" en vez de eliminarlo — así conservas su historial.`
+    `¿Seguro que quieres desactivar a ${medico.tratamiento} ${medico.nombres} ${medico.apellidos}?\n\n` +
+    `No se borra su historial — solo deja de aparecer disponible para nuevas citas.`
   );
   if (!confirmado) return;
 
-  const actualizados = medicos.filter((m) => m.id !== id);
-  guardarMedicos(actualizados);
-  renderTablaMedicos();
+  try {
+    const respuesta = await fetch(`${API_BASE_URL}/medicos/${id}/estado`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ estado: "inactivo" }),
+    });
+
+    if (!respuesta.ok) {
+      const datos = await respuesta.json();
+      alert(datos.mensaje || "No se pudo desactivar al médico.");
+      return;
+    }
+
+    renderTablaMedicos();
+  } catch (error) {
+    console.error("Error al desactivar médico:", error);
+    alert("No se pudo conectar con el servidor. ¿Está corriendo el backend?");
+  }
 };
 
 const formMedico = document.getElementById("form-registrar-medico");
 if (formMedico) {
-  formMedico.addEventListener("submit", (e) => {
+  formMedico.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const idEnEdicion = document.getElementById("medico-edit-id").value;
-    const medicos = obtenerMedicos();
 
     const datosMedico = {
       tratamiento: document.getElementById("med-tratamiento").value,
       nombres: document.getElementById("med-nombres").value.trim(),
       apellidos: document.getElementById("med-apellidos").value.trim(),
-      cedula: document.getElementById("med-cedula").value.trim(),
+      cedula: document.getElementById("med-cedula").value.trim() || null,
       telefono: document.getElementById("med-telefono").value.trim(),
       correo: document.getElementById("med-correo").value.trim(),
       especialidad: document.getElementById("med-especialidad").value,
       licencia: document.getElementById("med-licencia").value.trim(),
-      estado: document.getElementById("med-estado").value,
+      estado: document.getElementById("med-estado").value.toLowerCase(),
       horario: document.getElementById("med-horario").value.trim(),
     };
 
@@ -892,24 +905,31 @@ if (formMedico) {
       return;
     }
 
-    if (idEnEdicion) {
-      // Actualizar médico existente
-      const index = medicos.findIndex((m) => m.id === Number(idEnEdicion));
-      if (index !== -1) {
-        medicos[index] = { ...medicos[index], ...datosMedico };
-      }
-      guardarMedicos(medicos);
-      alert("¡Médico actualizado exitosamente!");
-    } else {
-      // Registrar médico nuevo
-      const nuevoId = medicos.length > 0 ? Math.max(...medicos.map((m) => m.id)) + 1 : 1;
-      medicos.push({ id: nuevoId, ...datosMedico });
-      guardarMedicos(medicos);
-      alert("¡Médico registrado exitosamente!");
-    }
+    try {
+      const esEdicion = Boolean(idEnEdicion);
+      const url = esEdicion ? `${API_BASE_URL}/medicos/${idEnEdicion}` : `${API_BASE_URL}/medicos`;
+      const metodo = esEdicion ? "PUT" : "POST";
 
-    renderTablaMedicos();
-    limpiarFormMedico();
+      const respuesta = await fetch(url, {
+        method: metodo,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datosMedico),
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        alert(datos.mensaje || "No se pudo guardar el médico.");
+        return;
+      }
+
+      alert(esEdicion ? "¡Médico actualizado exitosamente!" : "¡Médico registrado exitosamente!");
+      renderTablaMedicos();
+      limpiarFormMedico();
+    } catch (error) {
+      console.error("Error al guardar médico:", error);
+      alert("No se pudo conectar con el servidor. ¿Está corriendo el backend?");
+    }
   });
 }
 

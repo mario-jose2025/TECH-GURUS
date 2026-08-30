@@ -58,20 +58,25 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const { tratamiento, nombres, apellidos, cedula, telefono, correo, especialidad, licencia, horario, estado } = req.body;
 
-  if (!nombres || !apellidos || !cedula || !especialidad) {
-    return res.status(400).json({ mensaje: "Nombres, apellidos, cédula y especialidad son obligatorios." });
+  if (!nombres || !apellidos || !especialidad) {
+    return res.status(400).json({ mensaje: "Nombres, apellidos y especialidad son obligatorios." });
   }
 
   try {
     const pool = await getPool();
 
-    const existente = await pool
-      .request()
-      .input("cedula", sql.VarChar, cedula)
-      .query("SELECT id FROM medicos WHERE cedula = @cedula");
+    // Solo verificamos cédula duplicada si de verdad mandaron una —
+    // varios médicos pueden no tener cédula registrada (NULL), eso no
+    // choca con la restricción UNIQUE de la base de datos.
+    if (cedula) {
+      const existente = await pool
+        .request()
+        .input("cedula", sql.VarChar, cedula)
+        .query("SELECT id FROM medicos WHERE cedula = @cedula");
 
-    if (existente.recordset.length > 0) {
-      return res.status(409).json({ mensaje: "Ya existe un médico registrado con esa cédula." });
+      if (existente.recordset.length > 0) {
+        return res.status(409).json({ mensaje: "Ya existe un médico registrado con esa cédula." });
+      }
     }
 
     const resultado = await pool

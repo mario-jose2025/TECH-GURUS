@@ -2,6 +2,9 @@
 // PORTAL DEL PACIENTE - LÓGICA E INTERACTIVIDAD
 // ==========================================
 
+// URL del backend — misma que usa login.js/registro.js
+const API_BASE_URL = "http://localhost:3000/api";
+
 // Datos simulados del paciente logueado — cuando exista backend, esto
 // vendrá de la sesión/API real. Vive aquí arriba (no dentro de un solo
 // listener) porque tanto "Mi Perfil" como "Agendar Cita" lo necesitan.
@@ -106,35 +109,22 @@ window.mostrarSeccionPaciente = function (idSeccion, idNav, event) {
 
 // 2. Cargar Médicos según la Especialidad (dinámico desde el panel de admin)
 // -----------------------------------------------------------------------
-// Cuando el admin registra médicos en admind.html, los guarda en
-// localStorage bajo la clave "vitalis_medicos" (ver admindscrip.js).
-// Aquí los leemos para poblar el selector. Si todavía no hay ningún
-// médico registrado (localStorage vacío), usamos esta lista de respaldo
-// para que el formulario nunca se quede sin opciones durante la demo.
-const MEDICOS_STORAGE_KEY = "vitalis_medicos";
+// Médicos disponibles para "Agendar Cita" — ahora vienen del backend
+// (tabla `medicos` de SQL Server), ya no de localStorage.
+// -----------------------------------------------------------------------
+async function obtenerMedicosPorEspecialidad(especialidad) {
+  try {
+    const respuesta = await fetch(`${API_BASE_URL}/medicos?estado=activo`);
+    if (!respuesta.ok) throw new Error("No se pudo obtener la lista de médicos.");
 
-const medicosPorEspecialidad = {
-  "medicina-general": ["Dr. Roberto Gómez", "Dra. María Lopez"],
-  "pediatria": ["Dr. Carlos Ruiz"],
-  "ginecologia": ["Dra. Sofia Gutierrez"],
-  "odontologia": ["Dr. Mario Duarte"]
-};
-
-function obtenerMedicosPorEspecialidad(especialidad) {
-  const raw = localStorage.getItem(MEDICOS_STORAGE_KEY);
-
-  if (raw) {
-    try {
-      const medicos = JSON.parse(raw);
-      return medicos
-        .filter((m) => m.especialidad === especialidad && m.estado === "Activo")
-        .map((m) => `${m.tratamiento} ${m.nombres} ${m.apellidos}`);
-    } catch (e) {
-      console.warn("No se pudo leer la lista de médicos del admin, usando lista de respaldo.", e);
-    }
+    const medicos = await respuesta.json();
+    return medicos
+      .filter((m) => m.especialidad === especialidad)
+      .map((m) => `${m.tratamiento} ${m.nombres} ${m.apellidos}`);
+  } catch (error) {
+    console.error("Error al obtener médicos por especialidad:", error);
+    return [];
   }
-
-  return medicosPorEspecialidad[especialidad] || [];
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -142,18 +132,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectMed = document.getElementById("select-medico");
 
   if (selectEsp && selectMed) {
-    selectEsp.addEventListener("change", (e) => {
+    selectEsp.addEventListener("change", async (e) => {
       const espSeleccionada = e.target.value;
-      
-      // Limpiar y resetear el select de médicos
+
+      // Limpiar y resetear el select de médicos mientras carga
+      selectMed.innerHTML = '<option value="">Cargando médicos...</option>';
+      selectMed.disabled = true;
+
+      if (!espSeleccionada) {
+        selectMed.innerHTML = '<option value="">-- Seleccione especialidad primero --</option>';
+        return;
+      }
+
+      const medicosDisponibles = await obtenerMedicosPorEspecialidad(espSeleccionada);
+
       selectMed.innerHTML = '<option value="">-- Seleccione médico disponible --</option>';
 
-      const medicosDisponibles = obtenerMedicosPorEspecialidad(espSeleccionada);
-
-      if (espSeleccionada && medicosDisponibles.length > 0) {
-        // Habilitar el select de médico
+      if (medicosDisponibles.length > 0) {
         selectMed.disabled = false;
-        
+
         medicosDisponibles.forEach(medico => {
           const option = document.createElement("option");
           option.value = medico;
@@ -162,9 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       } else {
         selectMed.disabled = true;
-        selectMed.innerHTML = espSeleccionada
-          ? '<option value="">-- No hay médicos activos en esta especialidad --</option>'
-          : '<option value="">-- Seleccione especialidad primero --</option>';
+        selectMed.innerHTML = '<option value="">-- No hay médicos activos en esta especialidad --</option>';
       }
     });
   }
