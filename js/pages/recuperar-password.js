@@ -3,13 +3,6 @@
    Recuperación de contraseña en 2 pasos:
    1) Identificar la cuenta por usuario o correo.
    2) Establecer una nueva contraseña.
-
-   Nota: en un sistema real, el paso 1 enviaría un correo con un
-   enlace/código de verificación antes de permitir el paso 2. Como
-   este proyecto no tiene backend ni envío de correos todavía, el
-   paso 2 se habilita directamente para poder demostrar el flujo
-   completo — cuando conectes el backend, aquí es donde agregas la
-   verificación por correo antes de continuar.
    ========================================================= */
 
 (function () {

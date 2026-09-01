@@ -422,7 +422,7 @@ if (formAgendar) {
 
     alert(`¡Solicitud de Cita Enviada!\n\nSede: ${centro}\nEspecialidad: ${especialidad}\nMédico: ${medico}\nFecha y Hora: ${formatearFecha(fecha)} (${hora})\nConsultorio: #${consultorioAsignado}\nTeléfono de Alerta: ${telefono}\n\nTu cita quedará "Pendiente de confirmación" hasta que el centro de salud la confirme.`);
 
-    // Aquí en el futuro harás el fetch() POST al backend en vez de guardarCitas()
+    // Aquí en el futuro haremos el fetch() POST al backend en vez de guardarCitas()
     /*
     fetch('/api/citas', {
       method: 'POST',
@@ -966,7 +966,7 @@ window.marcarTomado = function (id) {
   guardarRecordatorios(recordatorios);
   renderRecordatorios();
 
-  // Aquí en el futuro enviarás un registro al backend mediante fetch POST
+  // Aquí en el futuro se enviara un registro al backend mediante fetch POST
   // para llevar control clínico real de cumplimiento del tratamiento.
 };
 

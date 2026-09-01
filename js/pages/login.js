@@ -2,8 +2,6 @@
 // LÓGICA DE INICIO DE SESIÓN - VITALIS TECH
 // ==========================================
 
-// URL del backend — cámbiala aquí si tu servidor corre en otro puerto
-// o cuando lo subas a un servidor real (ej. Render, Railway, Azure).
 const API_BASE_URL = "http://localhost:3000/api";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -94,9 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (rolSeleccionado === "admin") {
-        // ✅ Ya NO hay credenciales escritas en el código — el navegador
+        //  Ya NO hay credenciales escritas en el código — el navegador
         // le pregunta al backend, y el backend compara contra la tabla
-        // `usuarios` de SQL Server usando bcrypt. Ver README >
+        // `usuarios` de SQL Server usando bcrypt. >
         // "Consideraciones de seguridad" para el detalle de este cambio.
         try {
           const respuesta = await fetch(`${API_BASE_URL}/login`, {

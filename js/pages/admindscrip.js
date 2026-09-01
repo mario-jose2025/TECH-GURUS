@@ -569,7 +569,6 @@ window.addEventListener("storage", (e) => {
 // 6. PERFIL DEL ADMINISTRADOR / PERSONAL DE SALUD
 // ==========================================
 
-// Datos simulados — cuando exista backend, esto vendrá de la sesión/API real
 const datosAdminDemo = {
   nombres: "Roberto",
   apellidos: "Gómez",

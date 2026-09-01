@@ -5,7 +5,7 @@
 
 const bcrypt = require("bcrypt");
 
-const passwordEnTextoPlano = "admin123"; // cámbiala si quieres otra
+const passwordEnTextoPlano = "admin123";
 
 bcrypt.hash(passwordEnTextoPlano, 10).then((hash) => {
   console.log("\nContraseña original:", passwordEnTextoPlano);

@@ -1,9 +1,3 @@
-/* =========================================================
-   VITALIS TECH — components/navbar.js
-   Comportamiento del navbar: sombra al hacer scroll y botón
-   de "Iniciar sesión". Se incluye en TODAS las páginas del sitio.
-   ========================================================= */
-
 (function () {
   const navbar = document.getElementById("navbar");
   const btnLogin = document.getElementById("btnLogin");

@@ -1,11 +1,3 @@
-/* =========================================================
-   VITALIS TECH — components/carousel.js
-   Carrusel de imágenes de fondo: cambia automáticamente cada
-   cierto tiempo y permite navegación manual con flechas y puntos.
-   Componente reutilizable en cualquier página que tenga un
-   elemento #carousel con la estructura de carousel.css.
-   ========================================================= */
-
 (function () {
   const AUTO_PLAY_INTERVAL = 5000; // ms entre cada cambio automático
 
